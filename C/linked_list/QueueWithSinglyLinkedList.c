@@ -81,7 +81,7 @@ int addNode(LIST* list, int info)
     
 }
 //to find some node using info
-NODE* findPivot(LIST* list, int info)
+NODE* findNode(LIST* list, int info)
 {
     NODE* node;
     if (list->head != NULL)
@@ -107,6 +107,36 @@ NODE* findPivot(LIST* list, int info)
         node = NULL;
     }
     return node;
+}
+//to find the prev of the node
+NODE* findNodePrev(LIST* list, int info)
+{
+    NODE* node;
+    NODE* prev = NULL;
+    if (list->head != NULL)
+    {
+        node = list->head;
+        int i = 1;
+        while (i == 1)
+        {
+            if (node->info == info)
+            {
+                i=0;
+            }else if(node->prox == NULL)
+            {
+                prev = NULL;
+                i=0;
+            }else
+            {
+                prev = node;
+                node = node->prox;
+            }
+        }      
+    }else
+    {
+        node = NULL;
+    }
+    return prev;
 }
 //remove node on queue
 int removeNode(LIST* list)

@@ -81,7 +81,7 @@ int addNode(LIST* list, int info)
 }
 
 //to find some node using info
-NODE* findPivot(LIST* list, int info)
+NODE* findNode(LIST* list, int info)
 {
     NODE* node;
     if (list->head != NULL && node != NULL)
@@ -111,6 +111,17 @@ NODE* findPivot(LIST* list, int info)
         node = NULL;
     }
     return node;
+}
+//to find the prev of the node
+NODE* findNodePrev(LIST* list, int info)
+{
+    NODE* node = findNode(list, info);
+    if (node == NULL)
+    {
+        return NULL;
+    }else{
+        return node->prev;
+    }
 }
 ///remove node on list
 int removeNode(LIST* list)
@@ -184,38 +195,4 @@ void freeList(LIST* list)
         }
     }
     free(list);
-}
-
-int main()
-{
-    LIST* list = createList();
-    int i = 0;
-    while(i != -1)
-    {
-        printf("---------------------------------------\n");
-        printf("1.Adiciona valor \n2.Remove valor \n3.Ver lista \n4.Ver lista ao contrario \n-1.Sair \n");
-        scanf("%i",&i);
-        if (i == 1)
-        {
-            int item;
-            printf("dados do item da lista:");
-            scanf(" %i", &item);
-            addNode(list, item);
-        }else if(i == 2)
-        {
-            removeNode(list);
-        }else if(i == 3)
-        {
-            runList(list);
-        }else if(i == 4)
-        {
-            runBackList(list);
-        }else if(i == -1)
-        {
-            printf("saindo...\n");
-        }
-    }
-    freeList(list);
-    printf("lista limpa");
-    return 0;
 }

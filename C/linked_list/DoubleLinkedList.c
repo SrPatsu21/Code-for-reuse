@@ -112,7 +112,7 @@ int addNode(LIST* list, int info, NODE* pivot)
     }
 
 //to find some node using info
-NODE* findPivot(LIST* list, int info)
+NODE* findNode(LIST* list, int info)
 {
     NODE* node;
     if (list->head != NULL && node != NULL)
@@ -142,6 +142,17 @@ NODE* findPivot(LIST* list, int info)
         node = NULL;
     }
     return node;
+}
+//to find the prev of the node
+NODE* findNodePrev(LIST* list, int info)
+{
+    NODE* node = findNode(list, info);
+    if (node == NULL)
+    {
+        return NULL;
+    }else{
+        return node->prev;
+    }
 }
 //remove node on list
 //in case of receiving parameter from find Pivot, if find Pivot don't find the pivot, will return NULL thats mean remove from head
