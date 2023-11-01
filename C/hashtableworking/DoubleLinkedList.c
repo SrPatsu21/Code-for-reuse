@@ -3,21 +3,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define NULL ((void *)0)
-#define NAME_SIZE 15
+#define NAME_SIZE 16
 //struct
 //node
 typedef struct SNode
 {
     struct SNode* prev;
     char name[NAME_SIZE];
-    int info;
     struct SNode* prox;
 }NODE;
 //list
 typedef struct SList{
     struct SNode* head;
     struct SNode* tail;
-    int key;
     int size;
 }LIST;
 //errs
@@ -70,12 +68,12 @@ pivot is a reference to where place or remove
 */
 
 //add node on list
-int addNode(LIST* list, int info, NODE* pivot)
+int addNode(LIST* list, char name [NAME_SIZE], NODE* pivot)
 {
     NODE* node = createNode();
     if (node != NULL)
     {
-        node->info = info;
+        // *node->name = name;
             if(pivot == NULL)
             {
                 if(list->size == 0)
@@ -111,18 +109,18 @@ int addNode(LIST* list, int info, NODE* pivot)
 }
 //other add
     //add head
-    void addHead(LIST* list, int info)
+    int addHead(LIST* list, char name [NAME_SIZE])
     {
-        addNode(list, info, NULL);
+        return addNode(list, name, NULL);
     }
     //add tail
-    void addTail(LIST* list, int info)
+    int addTail(LIST* list, char name [NAME_SIZE])
     {
-        addNode(list, info, list->tail);
+        return addNode(list, name, list->tail);
     }
 
 //to find some node using info
-NODE* findNode(LIST* list, int info)
+NODE* findNode(LIST* list, char name [NAME_SIZE])
 {
     NODE* node;
     if (list->head != NULL && node != NULL)
@@ -131,7 +129,7 @@ NODE* findNode(LIST* list, int info)
         int i = 1;
         while (i == 1)
         {
-            if (node->info == info)
+            if (node->name == name)
             {
                 i=0;
             }else if(node->prox == NULL)
@@ -154,9 +152,9 @@ NODE* findNode(LIST* list, int info)
     return node;
 }
 //to find the prev of the node
-NODE* findNodePrev(LIST* list, int info)
+NODE* findNodePrev(LIST* list, char name [NAME_SIZE])
 {
-    NODE* node = findNode(list, info);
+    NODE* node = findNode(list, name);
     if (node == NULL)
     {
         return NULL;
@@ -214,14 +212,14 @@ int removeNode(LIST* list, NODE* pivot)
 }
 //other remove
     //remove head
-    void removeHead(LIST* list)
+    int removeHead(LIST* list)
     {
-        removeNode(list, NULL);
+        return removeNode(list, NULL);
     }
     //remove tail
-    void removeTail(LIST* list)
+    int removeTail(LIST* list)
     {
-        removeNode(list, list->tail->prev);
+        return removeNode(list, list->tail->prev);
     }
 //print all values
 int runList(LIST* list)
@@ -231,7 +229,7 @@ int runList(LIST* list)
         NODE* node = list->head;
         while (node != NULL)
         {
-            printf("%i \n", node->info);
+            printf("%s \n", node->name);
                 node = node->prox;
         }
     }else
@@ -247,7 +245,7 @@ int runBackList(LIST* list)
         NODE* node = list->tail;
         while (node != NULL)
         {
-            printf("%i \n", node->info);
+            printf("%s \n", node->name);
                 node = node->prev;
         }
     }else
@@ -257,7 +255,7 @@ int runBackList(LIST* list)
 }
 //!important!
 //clear memory 
-void freeList(LIST* list)
+int freeList(LIST* list)
 {
     if (list->head != NULL)
     {
@@ -270,5 +268,6 @@ void freeList(LIST* list)
         }
     }
     free(list);
+    return 1;
 }
 #endif
