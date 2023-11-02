@@ -1,8 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "DoubleLinkedList.c"
 #define COLUMNS 53
-#define FOLDER "nomes.txt"
+#define MULTIPLY 31
+#define PATH "E:\\projetos\\projetosGit\\C\\hashtableworking\\nomes.txt"
 
 //columns
 typedef struct SCol
@@ -13,7 +12,7 @@ typedef struct SCol
     struct SCol* prox;
 }COL;
 //hash table
-typedef struct{
+typedef struct SHashTable{
     struct SCol* head;
     struct SCol* tail;
     int size;
@@ -23,10 +22,15 @@ void getInitializationErr()
 {
     printf("\nIt is already defined\n");
 }
+void getFileErr()
+{
+    printf("File not found or can`t be open");
+}
+
 //create hashtable
 HASHTABLE* CreateTableHash()
 {
-    HASHTABLE* hash = (HASHTABLE*) malloc(sizeof(HASHTABLE*));
+    HASHTABLE* hash = (HASHTABLE*) malloc(sizeof(HASHTABLE));
     if (hash != NULL)
     {
         hash->head = NULL;
@@ -98,12 +102,15 @@ int autoDefineHashTable(HASHTABLE* hash, int Columns)
     }
 }
 //what key will be
-int hashing(HASHTABLE* hash, char name [NAME_SIZE])
+int hashing(HASHTABLE* hash, char name [NAME_SIZE], int size, int columns, int multiply)
 {
     int key = 0;
-    for (int i = 0; i < sizeof(*name)/sizeof(char); i++)
+    for (int i = 0; i < size; i++)
     {
-                key = (31 * key + name[i]) % hash->size+1;
+        if (name[i]!='\0')
+        {
+            key = (multiply * key + name[i]) % columns;
+        }
     }
     return key;
 }
@@ -126,25 +133,115 @@ int addOnColumn(COL* col, char name [NAME_SIZE])
 FILE* loadingData(char name[])
 {
     FILE* fptr = fopen(name, "r");
-    return fptr;
-}
-void printFiles(FILE* fptr){
-    char myString[NAME_SIZE];
-    while(fgets(myString, 7, fptr)) {
-        printf("%s", myString);
+    if (fptr != NULL)
+    {
+        return fptr;
+    }else
+    {
+        getFileErr();
+        return NULL;
     }
+}
+//gets all names and put at the hash
+int autoHashData(FILE* fptr, HASHTABLE* hash, int size, int columns, int multiply){
+    if (fptr != NULL)
+    {
+        char name[NAME_SIZE];  
+        while(fgets(name, NAME_SIZE, fptr)) 
+        {
+            for (int i = 0; i < NAME_SIZE; i++)
+            {
+                if (name[i]=='\n' || name[i]==' ' || name[i]=='\t')
+                {
+                    name[i]='\0';
+                }
+            }
+            addOnColumn(findColumn(hash, hashing(hash, name, size, columns, multiply)), name);
+        }
+        return 1;
+    }else
+    {
+        return 0;
+    }
+
+}
+//see the size of all elements on hash table
+//print all values
+int runHashTable(HASHTABLE* hash)
+{
+    if (hash->head != NULL)
+    {
+        COL* col = hash->head;
+        while (col != NULL)
+        {
+            // printf("%2i\t", col->key);
+            printf("%i\n", col->list->size);
+                col = col->prox;
+        }
+        return 1;
+    }else
+    {
+        getUnderflowErr();
+        return 0;
+    }
+}
+int seeHashList(HASHTABLE* hash, int key)
+{
+    printf("start\n");
+    COL* col = findColumn(hash, key);
+    runList(col->list);
+     printf("end\n");
+}
+//!important!
+//clear memory
+int freeHash(HASHTABLE* hash)
+{
+    if (hash->head != NULL)
+    {
+        COL* col = hash->head;
+        while (col != NULL)
+        {
+            COL* aux = col;
+            freeList(col->list);
+            col = col->prox;
+            free(aux);
+        }
+    }
+    free(hash);
+    return 1;
 }
 void main()
 {
     //init
-    // int columns = COLUMNS;
-    // HASHTABLE* hash = CreateTableHash(columns);
-    // autoDefineHashTable(hash, columns);
-    //operations
-    FILE* fptr = loadingData(FOLDER);
-    printFiles(fptr);
+    int op = 1;
+    HASHTABLE* hash = CreateTableHash(COLUMNS);
+    autoDefineHashTable(hash, COLUMNS);
+    //loading
+    FILE* fptr = loadingData(PATH);
+    autoHashData(fptr, hash, NAME_SIZE, COLUMNS, MULTIPLY);
+    fclose(fptr);
     //sort
     //view
+    while (op > 0)
+    {
+        printf("---------------------------\n");
+        printf("1.see hash table size\n2.see a list\n0.close\nop:\n");
+        scanf("%i", &op);
+        printf("---------------------------\n");
+        if (op == 1)
+        {
+            runHashTable(hash);
+        }else if(op == 2)
+        {
+            int key;
+            printf("key:");
+            scanf("%i", &key);
+            seeHashList(hash, key);
+        }else if(op == 3)
+        {
 
-    fclose(fptr);
+        }
+    }
+    //close
+    freeHash(hash);
 }

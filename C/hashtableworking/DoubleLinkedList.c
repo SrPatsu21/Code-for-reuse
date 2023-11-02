@@ -2,6 +2,7 @@
 #define DoubleLinkedList
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define NULL ((void *)0)
 #define NAME_SIZE 16
 //struct
@@ -73,7 +74,7 @@ int addNode(LIST* list, char name [NAME_SIZE], NODE* pivot)
     NODE* node = createNode();
     if (node != NULL)
     {
-        // *node->name = name;
+            strcpy(node->name, name);
             if(pivot == NULL)
             {
                 if(list->size == 0)
@@ -232,9 +233,11 @@ int runList(LIST* list)
             printf("%s \n", node->name);
                 node = node->prox;
         }
+        return 1;
     }else
     {
         getUnderflowErr();
+        return 0;
     }
 }
 //print all values end to start
