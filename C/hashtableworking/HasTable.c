@@ -1,6 +1,6 @@
 #include "DoubleLinkedList.c"
 #define COLUMNS 53
-#define MULTIPLY 31
+#define MULTIPLY 367
 #define PATH "E:\\projetos\\projetosGit\\C\\hashtableworking\\nomes.txt"
 
 //columns
@@ -102,14 +102,14 @@ int autoDefineHashTable(HASHTABLE* hash, int Columns)
     }
 }
 //what key will be
-int hashing(HASHTABLE* hash, char name [NAME_SIZE], int size, int columns, int multiply)
+int hashing(HASHTABLE* hash, char name[NAME_SIZE], int size, int columns, int multiply)
 {
     int key = 0;
     for (int i = 0; i < size; i++)
     {
         if (name[i]!='\0')
         {
-            key = (multiply * key + name[i]) % columns;
+            key = ((multiply * key) + name[i]) % columns;
         }
     }
     return key;
@@ -128,6 +128,11 @@ COL* findColumn(HASHTABLE* hash, int key)
 int addOnColumn(COL* col, char name [NAME_SIZE])
 {
     return addTail(col->list, name);
+}
+//add the name on the correct column
+int removeOnColumn(COL* col, char name [NAME_SIZE])
+{
+    return removeNode(col->list, findNodePrev(col->list, name));
 }
 //read the file
 FILE* loadingData(char name[])
@@ -174,7 +179,7 @@ int runHashTable(HASHTABLE* hash)
         COL* col = hash->head;
         while (col != NULL)
         {
-            // printf("%2i\t", col->key);
+            printf("%2i\t", col->key);
             printf("%i\n", col->list->size);
                 col = col->prox;
         }
@@ -185,12 +190,31 @@ int runHashTable(HASHTABLE* hash)
         return 0;
     }
 }
+//see a list
 int seeHashList(HASHTABLE* hash, int key)
 {
     printf("start\n");
     COL* col = findColumn(hash, key);
     runList(col->list);
-     printf("end\n");
+    printf("end\n");
+}
+//sort
+int sortColOnHashTable(HASHTABLE* hash)
+{
+    if (hash->head != NULL)
+    {
+        COL* col = hash->head;
+        while (col != NULL)
+        {
+            quickSort(col->list->head, col->list->tail);
+            col = col->prox;
+        }
+        return 1;
+    }else
+    {
+        getUnderflowErr();
+        return 0;
+    }
 }
 //!important!
 //clear memory
@@ -214,6 +238,7 @@ void main()
 {
     //init
     int op = 1;
+    char name[NAME_SIZE];
     HASHTABLE* hash = CreateTableHash(COLUMNS);
     autoDefineHashTable(hash, COLUMNS);
     //loading
@@ -221,25 +246,67 @@ void main()
     autoHashData(fptr, hash, NAME_SIZE, COLUMNS, MULTIPLY);
     fclose(fptr);
     //sort
+    sortColOnHashTable(hash);
     //view
     while (op > 0)
     {
         printf("---------------------------\n");
-        printf("1.see hash table size\n2.see a list\n0.close\nop:\n");
+        printf("1.add a new name\n2.remove a name\n3.Sort all names \n4.See hash table size\n5.print a list\n6.find a name key\n0.close\nop:\n");
         scanf("%i", &op);
         printf("---------------------------\n");
         if (op == 1)
         {
+            name[0]= 'a';
+            printf("name:");
+            scanf(" %[^\n]s", name);
+            for (int i = 0; i < NAME_SIZE; i++)
+            {
+                if (name[i]=='\n' || name[i]==' ' || name[i]=='\t')
+                {
+                    name[i]='\0';
+                }
+            }
+            printf("key:%i\n", hashing(hash, name, NAME_SIZE, COLUMNS, MULTIPLY));
+            addOnColumn(findColumn(hash, hashing(hash, name, NAME_SIZE, COLUMNS, MULTIPLY)), name);
+        }else if (op == 2)
+        {
+            name[0]= 'a';
+            printf("name:");
+            scanf(" %[^\n]s", name);
+            for (int i = 0; i < NAME_SIZE; i++)
+            {
+                if (name[i]=='\n' || name[i]==' ' || name[i]=='\t')
+                {
+                    name[i]='\0';
+                }
+            }
+            printf("key:%i\n", findColumn(hash, hashing(hash, name, NAME_SIZE, COLUMNS, MULTIPLY)));
+            removeOnColumn(findColumn(hash, hashing(hash, name, NAME_SIZE, COLUMNS, MULTIPLY)), name);   
+        }else if(op == 3)
+        {
+            sortColOnHashTable(hash);
+        }else if (op == 4)
+        {
             runHashTable(hash);
-        }else if(op == 2)
+        }else if(op == 5)
         {
             int key;
             printf("key:");
             scanf("%i", &key);
             seeHashList(hash, key);
-        }else if(op == 3)
+        }else if(op == 6)
         {
-
+            name[0]= 'a';
+            printf("name:");
+            scanf(" %[^\n]s", name);
+            for (int i = 0; i < NAME_SIZE; i++)
+            {
+                if (name[i]=='\n' || name[i]==' ' || name[i]=='\t')
+                {
+                    name[i]='\0';
+                }
+            }
+            printf("key:%i\n", findColumn(hash, hashing(hash, name, NAME_SIZE, COLUMNS, MULTIPLY)));
         }
     }
     //close

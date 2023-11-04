@@ -56,6 +56,11 @@ NODE* createNode()
     {
         node->prev= NULL;
         node->prox = NULL;
+        for (int i = 0; i < NAME_SIZE; i++)
+        {
+            node->name[i] = '\0';
+        }
+        
         return node;
     }else
     {
@@ -124,7 +129,7 @@ int addNode(LIST* list, char name [NAME_SIZE], NODE* pivot)
 NODE* findNode(LIST* list, char name [NAME_SIZE])
 {
     NODE* node;
-    if (list->head != NULL && node != NULL)
+    if (list->head != NULL)
     {
         node = list->head;
         int i = 1;
@@ -144,10 +149,7 @@ NODE* findNode(LIST* list, char name [NAME_SIZE])
         }      
     }else
     {
-        if (node == NULL)
-        {
-            getOverflowErr();
-        }
+        getUnderflowErr();
         node = NULL;
     }
     return node;
@@ -273,4 +275,69 @@ int freeList(LIST* list)
     free(list);
     return 1;
 }
+//------------------------------------------------------------------------------------------------------------------------
+//smal or equal
+int isSmaller(NODE* ns, NODE* ne)
+{
+    if (ns != NULL && ne != NULL)
+    {
+        if (ns == ne)
+        {
+            return 1;
+        }else
+        {
+            int v1 = 0;
+            int v2 = 0;
+            for (int i = 0; i < NAME_SIZE && v1 == v2; i++)
+            {
+                v1 += ns->name[i];
+                v2 += ne->name[i];
+            }
+            if (v1 <= v2)
+            {
+                return 1;
+            }else
+            {
+                return 0;
+            }
+        }
+    }else
+    {
+        return 0;
+    }
+}
+//switch two values in an array
+void swap(NODE* i, NODE* j)
+{
+    char aux [NAME_SIZE];
+	strcpy(aux, i->name);
+	strcpy(i->name, j->name);
+	strcpy(j->name, aux);
+}
+//find pivot and swap
+NODE* partition(NODE* start, NODE* end)   
+{    
+    NODE *i = start->prev;   
+    for (NODE *j = start; j != end; j = j->prox)   
+    {   
+        if (isSmaller(j, end))   
+        {   
+            i = (i == NULL)? start : i->prox;   
+            swap(i, j);   
+        }   
+    }   
+    i = (i == NULL)? start : i->prox;
+    swap(i, end);   
+    return i;   
+}
+//sort list
+void quickSort(NODE* start, NODE* end)   
+{   
+    if (end != NULL && start != end && start != end->prox)   
+    {   
+        NODE* p = partition(start, end);   
+        quickSort(start, p->prev);   
+        quickSort(p->prox, end);   
+    }   
+}  
 #endif
