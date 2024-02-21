@@ -2,6 +2,7 @@
 using namespace std;
 
 //abstract
+//is the virtual
 class AB {
     public:
     virtual void f() = 0;
@@ -14,12 +15,12 @@ struct A {
 
 //testiing 
 struct B : A {
-  virtual void f() {
+  void f() {
     cout << "hello";
    }
 };
 struct C : AB {
-  virtual void f() {
+  void f() {
     cout << "hello";
    }
 };
@@ -27,14 +28,14 @@ struct C : AB {
 class D : AB
 {
 public:
-    virtual void f() {
+    void f() {
         cout << "hello";
     }
 };
 class E : A
 {
 public:
-    virtual void f() {
+    void f() {
         cout << "hello";
     }
 };

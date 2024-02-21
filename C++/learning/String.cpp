@@ -2,6 +2,13 @@
 #include <string>
 using namespace std;
 
+/*
+    cin — for standard input
+    cout — for standard output
+    cerr — for unbuffered standard error output
+    clog — for buffered standard error output
+*/
+
 //string is an object like in Java
 //.append() or + to concatenation
 /*
