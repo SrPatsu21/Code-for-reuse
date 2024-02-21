@@ -39,7 +39,7 @@ public:
     }
 };
 
-//* block null
+//* block not null
 A& i(A&);
 
 int main() {
@@ -50,6 +50,8 @@ int main() {
    D d;
    E e;
 
+    //won't work
+    //pa->f();
     b.f();
     c.f();
     d.f();
