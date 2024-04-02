@@ -1,4 +1,5 @@
 #include "PPix.hpp"
+#include "Pagamento.hpp"
 
 PPix::PPix():
 Pagamento()

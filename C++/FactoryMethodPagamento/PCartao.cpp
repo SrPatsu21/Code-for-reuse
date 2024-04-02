@@ -1,4 +1,5 @@
 #include "PCartao.hpp"
+#include "Pagamento.hpp"
 
 PCartao::PCartao()
 :Pagamento()

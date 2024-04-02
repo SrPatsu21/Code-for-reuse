@@ -6,10 +6,8 @@
 int main(void)
 {
     Pagamento* p;
-    PBoleto h;
-
-    p = &h;
-    // p->pagar(90);
+    p = new PBoleto();
+    p->pagar(90);
     
     return 0;
 }

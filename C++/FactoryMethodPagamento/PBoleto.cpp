@@ -1,4 +1,5 @@
 #include "PBoleto.hpp"
+#include "Pagamento.hpp"
 
 PBoleto::PBoleto()
 :Pagamento()

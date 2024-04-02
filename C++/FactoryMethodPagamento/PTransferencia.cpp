@@ -1,4 +1,5 @@
 #include "PTransferencia.hpp"
+#include "Pagamento.hpp"
 
 PTransferencia::PTransferencia()
 :Pagamento()
