@@ -12,7 +12,7 @@ public:
     ~XML();
 
     void setXml(std::string xml);
-    const std::string getXml();
+    std::string getXml();
 };
 
 #endif

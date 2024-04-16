@@ -10,17 +10,7 @@ private:
 public:
     JSON();
     ~JSON();
-    void setJSON(std::string json);
-    const std::string getJSON();
+    void setJson(std::string json);
+    std::string getJson();
 };
-
-JSON::JSON(/* args */)
-{
-}
-
-JSON::~JSON()
-{
-}
-
-
 #endif
