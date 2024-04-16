@@ -241,27 +241,54 @@ int removeOnTree(TREE* root, int info)
     TREE* t = searchOnTree(root, info);
     if (NULL != t)
     {
-        if (NULL != t->right)
+        TREE* aux = t->root;
+        if (aux->left == t)
         {
-            t->right->root = t->root;
-            if (NULL != t->left)
+            if (NULL != t->right)
             {
-                insertATreeOnTree(root, t->left);
+                t->right->root = aux;
+                aux->left = t->right;
+                if (NULL != t->left)
+                {
+                    insertATreeOnTree(t->right, t->left);
+                }
+            }else if(NULL != t->left)
+            {
+                t->left->root = aux;
+                aux->left = t->left;
+            }else
+            {
+                aux->left = NULL;
             }
-        }else if(NULL != t->left)
+            t->info = 0;
+            free(t);
+            return 1;
+        }else if (aux->right == t)
         {
-            t->left->root = t->root;
-        }
-        if (t == t->root->right)
-        {
-            t->root->left = NULL;
+            if (NULL != t->right)
+            {
+                t->right->root = aux;
+                aux->right = t->right;
+                if (NULL != t->left)
+                {
+                    insertATreeOnTree(t->right, t->left);
+                }
+            }else if(NULL != t->left)
+            {
+                t->left->root = aux;
+                aux->right = t->left;
+            }else
+            {
+                aux->right = NULL;
+            }
+            t->info = 0;
+            free(t);
+            return 1;
         }else
         {
-            t->root->right == NULL;
+            printf("not found \n");
+            return 0;
         }
-        
-        free(t);
-        return 1;
     }
     printf("not found");
     return 0;
