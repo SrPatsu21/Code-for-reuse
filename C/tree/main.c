@@ -16,7 +16,7 @@ void findRoot(TREE* tree);
 int insertOnRigthSizeTree(TREE* root, int info);
 int insertOnLeftSizeTree(TREE* root, int info);
 int insertOnTree(TREE* root, int info);
-int insertATreeOnTree(TREE* root, TREE* tree);
+int transplantTree(TREE* root, TREE* tree);
 TREE* searchOnTree(TREE* root, int info);
 TREE* searchLinearOnTree(TREE* root, int info);
 int removeOnTree(TREE* root, int info);
@@ -175,13 +175,13 @@ int insertOnTree(TREE* root, int info)
     return 1;
 };
 
-int insertATreeOnTree(TREE* root, TREE* tree)
+int transplantTree(TREE* root, TREE* tree)
 {
     if (tree->info > root->info)
     {
         if (NULL != root->right)
         {
-            insertATreeOnTree(root->right, tree);
+            transplantTree(root->right, tree);
         }else
         {
             root->right = tree;
@@ -190,7 +190,7 @@ int insertATreeOnTree(TREE* root, TREE* tree)
     {
         if (NULL != root->left)
         {
-            insertATreeOnTree(root->left, tree);
+            transplantTree(root->left, tree);
         }else
         {
             root->left = tree;
@@ -250,7 +250,7 @@ int removeOnTree(TREE* root, int info)
                 aux->left = t->right;
                 if (NULL != t->left)
                 {
-                    insertATreeOnTree(t->right, t->left);
+                    transplantTree(t->right, t->left);
                 }
             }else if(NULL != t->left)
             {
@@ -271,7 +271,7 @@ int removeOnTree(TREE* root, int info)
                 aux->right = t->right;
                 if (NULL != t->left)
                 {
-                    insertATreeOnTree(t->right, t->left);
+                    transplantTree(t->right, t->left);
                 }
             }else if(NULL != t->left)
             {
