@@ -1,6 +1,6 @@
 #include "ConectDB.hpp"
 
-ConectDB::ConectDB(/* args */)
+ConectDB::ConectDB()
 {
 };
 
@@ -10,5 +10,5 @@ ConectDB::~ConectDB()
 
 void ConectDB::conect()
 {
-    std::cout << "conectando essa merda" << std::endl;
+    std::cout << "conectando..." << std::endl;
 };
