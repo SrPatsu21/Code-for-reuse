@@ -1,0 +1,4 @@
+LeftSide - RightSide <= 1 //in module
+
+case RR-> rotade clockwise
+case LL -> rotate anticlockwise
