@@ -16,10 +16,10 @@ void findRoot(TREE* tree);
 int insertOnRigthSizeTree(TREE* root, int info);
 int insertOnLeftSizeTree(TREE* root, int info);
 int insertOnTree(TREE* root, int info);
-int reImplantTree(TREE* root, TREE* tree);
+int transplantTree(TREE* root, TREE* tree);
 TREE* searchOnTree(TREE* root, int info);
 TREE* searchLinearOnTree(TREE* root, int info);
-int removeOnTree(TREE* root, int info);
+int removeOnTree(TREE** root, int info);
 int transpouseOnTree(TREE* tree);
 int printInOrderTree(TREE* root);
 int printPreOrderTree(TREE* root);
@@ -66,7 +66,7 @@ int main(void)
             {
                 printf("value to be removed:\n");
                 scanf("%i", &info);
-                removeOnTree(tree, info);
+                removeOnTree(&tree, info);
             }else if (op == 0)
             {
                 printf("exiting...\n");
@@ -150,69 +150,56 @@ int insertOnLeftSizeTree(TREE* root, int info)
 
 int insertOnTree(TREE* root, int info)
 {
-    if (NULL != root)
-    {    
-        if (info > root->info)
+    if (info > root->info)
+    {
+        if (NULL != root->right)
         {
-            if (NULL != root->right)
-            {
-                insertOnTree(root->right, info);
-            }else
-            {
-                insertOnRigthSizeTree(root, info);
-            }
-        }else if(info < root->info)
-        {
-            if (NULL != root->left)
-            {
-                insertOnTree(root->left, info);
-            }else
-            {
-                insertOnLeftSizeTree(root, info);
-            }
+            insertOnTree(root->right, info);
         }else
         {
-            return 0;
+            insertOnRigthSizeTree(root, info);
         }
-        return 1;
+    }else if(info < root->info)
+    {
+        if (NULL != root->left)
+        {
+            insertOnTree(root->left, info);
+        }else
+        {
+            insertOnLeftSizeTree(root, info);
+        }
     }else
     {
         return 0;
     }
-    
+    return 1;
 };
 
-int reImplantTree(TREE* root, TREE* tree)
+int transplantTree(TREE* root, TREE* tree)
 {
-    if(NULL != root && NULL != tree)
+    if (tree->info > root->info)
     {
-        if (tree->info > root->info)
+        if (NULL != root->right)
         {
-            if (NULL != root->right)
-            {
-                reImplantTree(root->right, tree);
-            }else
-            {
-                root->right = tree;
-            }
-        }else if(tree->info < root->info)
-        {
-            if (NULL != root->left)
-            {
-                reImplantTree(root->left, tree);
-            }else
-            {
-                root->left = tree;
-            }
+            transplantTree(root->right, tree);
         }else
         {
-            return 0;
+            root->right = tree;
         }
-        return 1;
+    }else if(tree->info < root->info)
+    {
+        if (NULL != root->left)
+        {
+            transplantTree(root->left, tree);
+        }else
+        {
+            root->left = tree;
+        }
     }else
     {
         return 0;
     }
+    return 1;
 };
 
 TREE* searchOnTree(TREE* root, int info)
@@ -249,58 +236,76 @@ TREE* searchLinearOnTree(TREE* root, int info)
     return root;
 };
 
-int removeOnTree(TREE* root, int info)
+int removeOnTree(TREE** root, int info)
 {
-    TREE* t = searchOnTree(root, info);
+    TREE* t = searchOnTree(*root, info);
+    
     if (NULL != t)
     {
-        TREE* aux = t->root;
-        if (aux->left == t)
+        if (NULL != t->root)
         {
-            if (NULL != t->right)
+            TREE* aux = t->root;
+            if (aux->left == t)
             {
-                t->right->root = aux;
-                aux->left = t->right;
-                if (NULL != t->left)
+                if (NULL != t->right)
                 {
-                    reImplantTree(t->right, t->left);
-                }
-            }else if(NULL != t->left)
-            {
-                t->left->root = aux;
-                aux->left = t->left;
-            }else
-            {
-                aux->left = NULL;
-            }
-            t->info = 0;
-            free(t);
-            return 1;
-        }else if (aux->right == t)
-        {
-            if (NULL != t->right)
-            {
-                t->right->root = aux;
-                aux->right = t->right;
-                if (NULL != t->left)
+                    t->right->root = aux;
+                    aux->left = t->right;
+                    if (NULL != t->left)
+                    {
+                        transplantTree(t->right, t->left);
+                    }
+                }else if(NULL != t->left)
                 {
-                    reImplantTree(t->right, t->left);
+                    t->left->root = aux;
+                    aux->left = t->left;
+                }else
+                {
+                    aux->left = NULL;
                 }
-            }else if(NULL != t->left)
+                t->info = 0;
+                free(t);
+                return 1;
+            }else if (aux->right == t)
             {
-                t->left->root = aux;
-                aux->right = t->left;
-            }else
-            {
-                aux->right = NULL;
+                if (NULL != t->right)
+                {
+                    t->right->root = aux;
+                    aux->right = t->right;
+                    if (NULL != t->left)
+                    {
+                        transplantTree(t->right, t->left);
+                    }
+                }else if(NULL != t->left)
+                {
+                    t->left->root = aux;
+                    aux->right = t->left;
+                }else
+                {
+                    aux->right = NULL;
+                }
+                t->info = 0;
+                free(t);
+                return 1;
             }
-            t->info = 0;
-            free(t);
-            return 1;
         }else
         {
-            printf("not found \n");
-            return 0;
+            if (NULL != t->right)
+                {
+                    *root = t->right;
+                    t->right->root = NULL;
+                    if (NULL != t->left)
+                    {
+                        transplantTree(t->right, t->left);
+                    }
+                }else if(NULL != t->left)
+                {
+                    *root = t->left;
+                    t->left->root = NULL;
+                }
+                t->info = 0;
+                free(t);
+                return 1;
         }
     }
     printf("not found");
@@ -361,35 +366,3 @@ TREE* minTree(TREE* tree)
         return tree;
     }
 };
-
-int balanceTree(TREE* root)
-{
-    if (NULL != root)
-    {
-        
-    }else
-    {
-        /* code */
-    }
-};
-
-int countTreeSize(TREE * root)
-{
-    if (NULL != root)
-    {
-        if (NULL != root->right)
-        {
-            /* code */
-        }
-        if (/* condition */)
-        {
-            /* code */
-        }
-        return 1;
-        
-    }else
-    {
-        return 0;
-    }
-    
-}

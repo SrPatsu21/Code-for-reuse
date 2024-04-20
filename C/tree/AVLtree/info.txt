@@ -1,4 +1,21 @@
 LeftSide - RightSide <= 1 //in module
 
-case RR-> rotade clockwise
+case RR -> rotade clockwise
 case LL -> rotate anticlockwise
+case RL -> rotade clockwise and after rotade anticlockwise
+case LR -> rotade anticlockwise and after rotade clockwise
+
+What will be done in practice:
+
+*function to verify if is balanced 
+*function to make RR
+*function to make LL
+*function to make RL
+*function to make LR
+*function to insert and fix to keep AVL
+*function to remove and fix to keep AVL
+
+
+
+
+
