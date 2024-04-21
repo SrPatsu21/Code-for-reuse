@@ -12,11 +12,12 @@ typedef struct Tree
 
 TREE* createNewTree(int info);
 void freeTree(TREE* root);
-void findRoot(TREE* tree);
+TREE* findRoot(TREE* tree);
 int insertOnRigthSizeTree(TREE* root, int info);
 int insertOnLeftSizeTree(TREE* root, int info);
 int insertOnTree(TREE* root, int info);
 int transplantTree(TREE* root, TREE* tree);
+int reImplantTree(TREE* root, TREE* tree);
 TREE* searchOnTree(TREE* root, int info);
 TREE* searchLinearOnTree(TREE* root, int info);
 int removeOnTree(TREE** root, int info);
@@ -26,6 +27,15 @@ int printPreOrderTree(TREE* root);
 int printPostOrderTree(TREE* root);
 TREE* maxTree(TREE* tree);
 TREE* minTree(TREE* tree);
+
+int getBalanceTreeAVL(TREE* tree);
+int manageSwap(TREE** tree);
+int makeRRAVL(TREE** tree);
+int makeLLAVL(TREE** tree);
+int makeRLAVL(TREE** tree);
+int makeLRAVL(TREE** tree);
+int insertOnTreeAVL(TREE** adrs, TREE* root, int info);
+int removeOnTreeAVL(TREE** tree);
 
 
 int main(void)
@@ -81,7 +91,7 @@ int main(void)
             tree = createNewTree(info);
         }
     }
-    findRoot(tree);
+    tree = findRoot(tree);
     freeTree(tree);
     return 0;
 };
@@ -110,12 +120,15 @@ void freeTree(TREE* root)
     }
 };
 
-void findRoot(TREE* tree)
+TREE* findRoot(TREE* tree)
 {
     if (tree->root != NULL)
     {
         tree = tree->root;
-        findRoot(tree);
+        return findRoot(tree);
+    }else
+    {
+        return tree;
     }
 };
 
@@ -150,38 +163,94 @@ int insertOnLeftSizeTree(TREE* root, int info)
 
 int insertOnTree(TREE* root, int info)
 {
-    if (info > root->info)
-    {
-        if (NULL != root->right)
+    if (root != NULL)
+    {   
+        if (info > root->info)
         {
-            insertOnTree(root->right, info);
+            if (NULL != root->right)
+            {
+                insertOnTree(root->right, info);
+            }else
+            {
+                insertOnRigthSizeTree(root, info);
+            }
+        }else if(info < root->info)
+        {
+            if (NULL != root->left)
+            {
+                insertOnTree(root->left, info);
+            }else
+            {
+                insertOnLeftSizeTree(root, info);
+            }
         }else
         {
-            insertOnRigthSizeTree(root, info);
-        }
-    }else if(info < root->info)
-    {
-        if (NULL != root->left)
-        {
-            insertOnTree(root->left, info);
-        }else
-        {
-            insertOnLeftSizeTree(root, info);
+            return 0;
         }
     }else
+    {
+        printf("null root\n");
+        return 0;
+    }
+    return 1;
+};
+int transplantTree(TREE* root, TREE* tree)
+{
+    if (tree != NULL && root != NULL)
+    {
+        if (tree->info > root->info)
+        {
+            if (NULL != root->right)
+            {
+                transplantTree(root->right, tree);
+            }else
+            {
+                root->right = tree;
+                TREE* r = tree->right;
+                TREE* l = tree->left;
+                tree->right = NULL;
+                tree->left = NULL;
+
+                return transplantTree(findRoot(root), r) * transplantTree(findRoot(root), l);
+            }
+        }else if(tree->info < root->info)
+        {
+            if (NULL != root->left)
+            {
+                transplantTree(root->left, tree);
+            }else
+            {
+                root->left = tree;
+                TREE* r = tree->right;
+                TREE* l = tree->left;
+                tree->right = NULL;
+                tree->left = NULL;
+
+                return transplantTree(findRoot(root), r) * transplantTree(findRoot(root), l);
+            }
+        }else if (tree->info == root->info)
+        {
+                TREE* r = tree->right;
+                TREE* l = tree->left;
+                tree->right = NULL;
+                tree->left = NULL;
+                return transplantTree(findRoot(root), r) * transplantTree(findRoot(root), l);
+        }
+    }else if (NULL == root)
     {
         return 0;
     }
     return 1;
 };
 
-int transplantTree(TREE* root, TREE* tree)
+
+int reInplantTree(TREE* root, TREE* tree)
 {
     if (tree->info > root->info)
     {
         if (NULL != root->right)
         {
-            transplantTree(root->right, tree);
+            reInplantTree(root->right, tree);
         }else
         {
             root->right = tree;
@@ -190,7 +259,7 @@ int transplantTree(TREE* root, TREE* tree)
     {
         if (NULL != root->left)
         {
-            transplantTree(root->left, tree);
+            reInplantTree(root->left, tree);
         }else
         {
             root->left = tree;
@@ -253,7 +322,7 @@ int removeOnTree(TREE** root, int info)
                     aux->left = t->right;
                     if (NULL != t->left)
                     {
-                        transplantTree(t->right, t->left);
+                        reImplantTree(t->right, t->left);
                     }
                 }else if(NULL != t->left)
                 {
@@ -274,7 +343,7 @@ int removeOnTree(TREE** root, int info)
                     aux->right = t->right;
                     if (NULL != t->left)
                     {
-                        transplantTree(t->right, t->left);
+                        reImplantTree(t->right, t->left);
                     }
                 }else if(NULL != t->left)
                 {
@@ -296,7 +365,7 @@ int removeOnTree(TREE** root, int info)
                     t->right->root = NULL;
                     if (NULL != t->left)
                     {
-                        transplantTree(t->right, t->left);
+                        reImplantTree(t->right, t->left);
                     }
                 }else if(NULL != t->left)
                 {
@@ -365,4 +434,200 @@ TREE* minTree(TREE* tree)
     {
         return tree;
     }
+};
+
+int getBalanceTreeAVL(TREE* tree)
+{
+    int cont = 0;
+    if (NULL != tree)
+    {
+        int r = 0, l = 0;
+        if (tree->right)
+        {
+            r = getBalanceTreeAVL(tree->right);
+        }
+        if (tree->left)
+        {
+            l = getBalanceTreeAVL(tree->left);
+        }
+
+        if (-1 > l - r || 1 < l - r)
+        {
+            //call the swap manager
+        }
+        
+        return (l + r + l); 
+    }
+};
+
+int manageSwap(TREE** tree)
+{
+    //
+    if (NULL != (*tree)->left)
+    {
+        if (NULL != (*tree)->left->left)
+        {
+            //LL
+        }else if(NULL != (*tree)->left->right)
+        {
+            //LR
+        }
+    }
+    if(NULL != (*tree)->right)
+    {
+        if (NULL != (*tree)->left->left)
+        {
+            //RL
+        }else if(NULL != (*tree)->left->right)
+        {
+            //RR
+        }
+
+    }
+};
+
+// *function to make RR
+int makeRRAVL(TREE** tree)
+{
+    (*tree)->right->root = (*tree)->root;
+
+    if (NULL != (*tree)->root)
+    {
+        if ((*tree) == (*tree)->root->left)
+        {
+            (*tree)->root->left = (*tree)->right;
+        }else if ((*tree) == (*tree)->root->right)
+        {
+            (*tree)->root->right = (*tree)->right;
+        }
+    }    
+
+    (*tree)->root = (*tree)->right;
+    (*tree)->right = NULL;
+    reImplantTree((*tree)->root, (*tree));
+
+    if (NULL == (*tree)->root->root)
+    {
+        tree = (*tree)->root;
+    }
+};
+// *function to make LL
+int makeLLAVL(TREE** tree)
+{
+    (*tree)->left->root = (*tree)->root;
+
+    if (NULL != (*tree)->root)
+    {
+        if ((*tree) == (*tree)->root->left)
+        {
+            (*tree)->root->left = (*tree)->left;
+        }else if ((*tree) == (*tree)->root->right)
+        {
+            (*tree)->root->right = (*tree)->left;
+        }
+    }    
+
+    (*tree)->root = (*tree)->left;
+    (*tree)->left = NULL;
+    reImplantTree((*tree)->root, (*tree));
+
+    if (NULL == (*tree)->root->root)
+    {
+        tree = (*tree)->root;
+    }
+};
+// *function to make RL
+int makeRLAVL(TREE** tree)
+{
+    (*tree)->right->left->root = (*tree)->root;
+
+    if (NULL != (*tree)->root)
+    {
+        if ((*tree) == (*tree)->root->left)
+        {
+            (*tree)->root->left = (*tree)->right->left;
+        }else if ((*tree) == (*tree)->root->right)
+        {
+            (*tree)->root->right = (*tree)->right->left;
+        }
+    }    
+
+    (*tree)->root = (*tree)->right->left;
+    (*tree)->right->left = NULL;
+    reImplantTree((*tree)->root, (*tree)->right);
+    (*tree)->right = NULL;
+    reImplantTree((*tree)->root, (*tree));
+
+    if (NULL == (*tree)->root->root)
+    {
+        tree = (*tree)->root;
+    }
+};
+// *function to make LR
+int makeLRAVL(TREE** tree)
+{
+    (*tree)->left->right->root = (*tree)->root;
+
+    if (NULL != (*tree)->root)
+    {
+        if ((*tree) == (*tree)->root->left)
+        {
+            (*tree)->root->left = (*tree)->left->right;
+        }else if ((*tree) == (*tree)->root->right)
+        {
+            (*tree)->root->right = (*tree)->left->right;
+        }
+    }    
+
+    (*tree)->root = (*tree)->left->right;
+    (*tree)->left->right = NULL;
+    reImplantTree((*tree)->root, (*tree)->left);
+    (*tree)->left = NULL;
+    reImplantTree((*tree)->root, (*tree));
+
+    if (NULL == (*tree)->root->root)
+    {
+        tree = (*tree)->root;
+    }
+};
+
+//when call the first TREE problem
+
+int insertOnTreeAVL(TREE** adrs, TREE* root, int info)
+{
+    if (root != NULL)
+    {   
+        if (info > root->info)
+        {
+            if (NULL != root->right)
+            {
+                insertOnTreeAVL(adrs, root->right, info);
+            }else
+            {
+                insertOnRigthSizeTree(root, info);
+            }
+        }else if(info < root->info)
+        {
+            if (NULL != root->left)
+            {
+                insertOnTreeAVL(adrs ,root->left, info);
+            }else
+            {
+                insertOnLeftSizeTree(root, info);
+            }
+        }else
+        {
+            return 0;
+        }
+    }else
+    {
+        printf("null root\n");
+        return 0;
+    }
+    return 1;
+};
+
+int removeOnTreeAVL(TREE** tree)
+{
+
 };
