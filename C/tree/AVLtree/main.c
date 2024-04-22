@@ -27,7 +27,7 @@ int printPreOrderTree(TREE* root);
 int printPostOrderTree(TREE* root);
 TREE* maxTree(TREE* tree);
 TREE* minTree(TREE* tree);
-int getBalanceTreeAVL(TREE** adrs, TREE* tree);
+int getBalanceTreeAVL(TREE* tree);
 int manageSwap(TREE** adrs, TREE* tree);
 int makeRRAVL(TREE** adrs, TREE* tree);
 int makeLLAVL(TREE** adrs, TREE* tree);
@@ -51,7 +51,7 @@ int main(void)
             {
                 printf("set tree info:");
                 scanf("%i", &info);
-                insertOnTree(tree, info);
+                insertOnTreeAVL(&tree, tree, info);
 
             }else if (op == 2)
             {
@@ -87,7 +87,7 @@ int main(void)
         {
             printf("Tree null, init value:\n");
             scanf("%i", &info);
-            tree = createNewTree(info);
+            insertOnTreeAVL(&tree, tree, info);
         }
     }
     tree = findRoot(tree);
@@ -193,6 +193,7 @@ int insertOnTree(TREE* root, int info)
     }
     return 1;
 };
+
 int transplantTree(TREE* root, TREE* tree)
 {
     if (tree != NULL && root != NULL)
@@ -241,7 +242,6 @@ int transplantTree(TREE* root, TREE* tree)
     }
     return 1;
 };
-
 
 int reInplantTree(TREE* root, TREE* tree)
 {
@@ -435,57 +435,56 @@ TREE* minTree(TREE* tree)
     }
 };
 
-int getBalanceTreeAVL(TREE** adrs,TREE* tree)
+int getBalanceTreeAVL(TREE* tree)
 {
-    int cont = 0;
     if (NULL != tree)
     {
-        int r = 0, l = 0;
-        if (tree->right)
+        int r = getBalanceTreeAVL(tree->right);
+        int l = getBalanceTreeAVL(tree->left);     
+        if (r > l)
         {
-            r = getBalanceTreeAVL(adrs, tree->right);
-        }
-        if (tree->left)
+            return 1 + r;
+        }else
         {
-            l = getBalanceTreeAVL(adrs, tree->left);
-        }
-
-        if (-1 > (l - r) || 1 < (l - r))
-        {
-            manageSwap(adrs, tree);
-        }
-        
-        return (l + r + l); 
+            return 1 + l;
+        }           
+    }else
+    {
+        return 0;
     }
 };
 
 //wont work
 int manageSwap(TREE** adrs, TREE* tree)
 {
-    if (NULL != tree->left)
+    int r = getBalanceTreeAVL(tree->right);
+    int l = getBalanceTreeAVL(tree->left);     
+    if (r > l)
     {
-        if (NULL != tree->left->left)
-        {
-            makeLLAVL(adrs, tree);
-        }else if(NULL != tree->left->right)
-        {
-            makeLRAVL(adrs, tree);
-        }
-    }
-    if(NULL != tree->right)
-    {
-        if (NULL != tree->left->left)
-        {
-            makeRLAVL(adrs, tree);
-        }else if(NULL != tree->left->right)
+        r = getBalanceTreeAVL(tree->right->right);
+        l = getBalanceTreeAVL(tree->right->left);     
+        if (r > (l+1))
         {
             makeRRAVL(adrs, tree);
+        }else if(l > (r+1))
+        {
+            makeRLAVLadrs(adrs, tree);
         }
-
+    }else if (r < l)
+    {
+        r = getBalanceTreeAVL(tree->left->right);
+        l = getBalanceTreeAVL(tree->left->left);     
+        if (r > (l+1))
+        {
+            makeLRAVL(adrs, tree);
+        }else if(l > (r+1))
+        {
+            makeLLAVL(adrs, tree);
+        }
     }
+    return 0;
 };
 
-// *function to make RR
 int makeRRAVL(TREE** adrs, TREE* tree)
 {
     tree->right->root = tree->root;
@@ -510,7 +509,7 @@ int makeRRAVL(TREE** adrs, TREE* tree)
         adrs = tree->root;
     }
 };
-// *function to make LL
+
 int makeLLAVL(TREE** adrs, TREE* tree)
 {
     tree->left->root = tree->root;
@@ -535,7 +534,7 @@ int makeLLAVL(TREE** adrs, TREE* tree)
         adrs = tree->root;
     }
 };
-// *function to make RL
+
 int makeRLAVL(TREE** adrs, TREE* tree)
 {
     tree->right->left->root = tree->root;
@@ -562,7 +561,7 @@ int makeRLAVL(TREE** adrs, TREE* tree)
         adrs = tree->root;
     }
 };
-// *function to make LR
+
 int makeLRAVL(TREE** adrs, TREE* tree)
 {
     tree->left->right->root = tree->root;
@@ -603,8 +602,7 @@ int insertOnTreeAVL(TREE** adrs, TREE* root, int info)
                 insertOnTreeAVL(adrs, root->right, info);
             }else
             {
-                insertOnRigthSizeTree(root, info);               
-                getBalanceTreeAVL(adrs, root->root);
+                insertOnRigthSizeTree(root, info);
             }
         }else if(info < root->info)
         {
@@ -614,16 +612,15 @@ int insertOnTreeAVL(TREE** adrs, TREE* root, int info)
             }else
             {
                 insertOnLeftSizeTree(root, info);
-                getBalanceTreeAVL(adrs, root->root);
             }
         }else
         {
             return 0;
         }
+        manageSwap(adrs, root->root);
     }else
     {
-        printf("null root\n");
-        return 0;
+        adrs = createNewTree(info);
     }
     	    
     return 1;
