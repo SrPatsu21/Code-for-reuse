@@ -1,29 +1,43 @@
 #ifndef COMPOSITEISSUE_HPP
 #define COMPOSITEISSUE_HPP
 
-#include <iostream>
+#include "Component.hpp"
 
-
-class CompositeIssue
+class CompositeIssue : public Component
 {
 private:
-    std::string title;
-    //grupo de tarefaz variadas
-
+    std::list<Component> ls;
 public:
-    CompositeIssue(/* args */);
+    CompositeIssue();
+    CompositeIssue(std::string title);
     ~CompositeIssue();
+    void add(Component newOne);
+    void remove();
+    Component get(int index);
+};
+CompositeIssue::CompositeIssue(std::string title)
+{
+    setTitle(title);
 };
 
-CompositeIssue::CompositeIssue(/* args */)
-{
-
-}
 
 CompositeIssue::~CompositeIssue()
 {
 
-}
+};
 
+void CompositeIssue::add(Component newOne)
+{
+    ls.insert(ls.end(), newOne);
+};
+void CompositeIssue::remove()
+{
+    ls.pop_back();
+};
+
+Component CompositeIssue::get(int index)
+{
+    return CompositeIssue();
+}
 
 #endif
