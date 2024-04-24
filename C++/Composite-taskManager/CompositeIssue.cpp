@@ -3,7 +3,6 @@
 CompositeIssue::CompositeIssue(std::string title)
 {
     setTitle(title);
-    setType(Type::ISSUE);
 };
 
 CompositeIssue::~CompositeIssue()
@@ -28,18 +27,7 @@ void CompositeIssue::get()
         std::advance(it, i);
         std::cout << ((Component*)(*it))->getTitle() << ":" << std::endl;
         std::cout << "/*" << std::endl;
-
         (*it)->get();
-
-        // if ((*it).getType() == Type::ISSUE)
-        // {
-            
-        // }else if ((*it).getType() == Type::COMPOSITEISSUE)
-        // {
-        //     ((CompositeIssue)(*it)).get();
-        // }
-        
-        
         std::cout << "*/" << std::endl;    
     }
 }

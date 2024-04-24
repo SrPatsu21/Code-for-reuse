@@ -24,13 +24,3 @@ void Component::get()
 {
     std::cout << "no open" << std::endl;
 };
-
-void Component::setType(Type type)
-{
-    this->type = type;
-};
-
-Type Component::getType()
-{
-    return type;
-};
