@@ -15,28 +15,9 @@ protected:
     Component();
 public:
     ~Component();
-    void setTitle(std::string title);
+    virtual void setTitle(std::string title);
     virtual std::string getTitle();
-};
-
-Component::Component()
-{
-
-}
-
-Component::~Component()
-{
-
-}
-
-void Component::setTitle(std::string title)
-{
-    this->title = title;
-};
-
-std::string Component::getTitle()
-{
-    return title;
+    virtual Component get();
 };
 
 #endif

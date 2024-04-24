@@ -12,7 +12,7 @@ typedef struct Tree
 TREE* createNewTree(int info);
 void freeTree(TREE* root);
 TREE* findRoot(TREE* tree);
-int insertOnRigthSizeTree(TREE* root, int info);
+int insertOnRightSizeTree(TREE* root, int info);
 int insertOnLeftSizeTree(TREE* root, int info);
 int insertOnTree(TREE** adrs, TREE* root, int info);
 int transplantTree(TREE* root, TREE* tree, TREE* src);
@@ -161,7 +161,7 @@ TREE* minTree(TREE* tree)
     }
 };
 
-int insertOnRigthSizeTree(TREE* root, int info)
+int insertOnRightSizeTree(TREE* root, int info)
 {
     TREE* newtree = createNewTree(info);
     if (newtree != NULL)
@@ -198,7 +198,7 @@ int insertOnTree(TREE** adrs, TREE* root, int info)
                 insertOnTree(adrs, root->right, info);
             }else
             {
-                insertOnRigthSizeTree(root, info);
+                insertOnRightSizeTree(root, info);
             }
         }else if(info < root->info)
         {
