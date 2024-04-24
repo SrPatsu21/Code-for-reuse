@@ -3,6 +3,7 @@
 Issue::Issue(std::string title)
 {
     setTitle(title);
+    setType(Type::ISSUE);
 };
 
 Issue::Issue(std::string title, std::string description, std::string deadline)
@@ -10,6 +11,7 @@ Issue::Issue(std::string title, std::string description, std::string deadline)
     setTitle(title);
     setDescription(description);
     setDeadline(deadline);
+    setType(Type::ISSUE);
 };
 
 Issue::~Issue()
@@ -39,5 +41,5 @@ std::string Issue::getDeadline()
 
 void Issue::get()
 {
-    std::cout << getDescription() << std::endl;
+    std::cout << "file description:" << std::endl << "\t" << getDescription() << std::endl;
 };

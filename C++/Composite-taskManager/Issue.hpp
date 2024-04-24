@@ -21,7 +21,7 @@ public:
     std::string getDescription();
     void setDeadline(std::string deadline);
     std::string getDeadline();
-    void get();
+    virtual void get();
 };
 
 #endif

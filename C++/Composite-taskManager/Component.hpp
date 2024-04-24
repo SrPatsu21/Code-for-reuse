@@ -3,21 +3,23 @@
 
 #include <iostream>
 #include <list>
-#include "CompositeIssue.hpp"
 
+enum Type { ISSUE = 1, COMPOSITEISSUE = 2, NONE = 0};
 
 class Component
 {
 private:
     std::string title;
-    CompositeIssue composite = CompositeIssue("root");
+    Type type = Type::NONE;
 protected:
-    Component();
 public:
+    Component();
     ~Component();
     virtual void setTitle(std::string title);
     virtual std::string getTitle();
-    virtual Component get();
+    virtual void get();
+    void setType(Type type);
+    Type getType();
 };
 
 #endif

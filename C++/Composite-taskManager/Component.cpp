@@ -3,12 +3,12 @@
 Component::Component()
 {
 
-}
+};
 
 Component::~Component()
 {
 
-}
+};
 
 void Component::setTitle(std::string title)
 {
@@ -20,7 +20,17 @@ std::string Component::getTitle()
     return title;
 };
 
-Component Component::get()
+void Component::get()
 {
-    return *this;
+    std::cout << "no open" << std::endl;
+};
+
+void Component::setType(Type type)
+{
+    this->type = type;
+};
+
+Type Component::getType()
+{
+    return type;
 };

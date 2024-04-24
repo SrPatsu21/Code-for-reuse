@@ -2,17 +2,18 @@
 #define COMPOSITEISSUE_HPP
 
 #include "Component.hpp"
+#include "Issue.hpp"
 
 class CompositeIssue : public Component
 {
 private:
-    std::list<Component> ls;
+    std::list<Component*> ls;
 public:
     CompositeIssue(std::string title);
     ~CompositeIssue();
-    void add(Component newOne);
+    void add(Component* newOne);
     void remove();
-    Component get();
+    virtual void get();
 };
 
 #endif
