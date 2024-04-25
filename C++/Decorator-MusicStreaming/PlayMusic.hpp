@@ -1,16 +1,15 @@
+#ifndef PLAYMUSIC_HPP
+#define PLAYMUSIC_HPP
+
+#include <iostream>
+
 class PlayMusic
 {
 private:
 public:
     PlayMusic();
     ~PlayMusic();
-    void play();
+    virtual void play();
 };
 
-PlayMusic::PlayMusic(/* args */)
-{
-}
-
-PlayMusic::~PlayMusic()
-{
-}
+#endif
