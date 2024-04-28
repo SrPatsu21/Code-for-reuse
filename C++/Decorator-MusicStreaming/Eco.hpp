@@ -1,12 +1,10 @@
 #ifndef ECO_HPP
 #define ECO_HPP
 
-#include "PlayMusic.hpp"
+#include "BaseDecorator.hpp"
 
-class Eco : public PlayMusic
+class Eco : public BaseDecorator
 {
-private:
-    PlayMusic* playm;
 public:
     Eco(PlayMusic* playm);
     ~Eco();

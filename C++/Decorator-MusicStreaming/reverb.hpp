@@ -1,12 +1,10 @@
 #ifndef REVEB_HPP
 #define REVEB_HPP
 
-#include "PlayMusic.hpp"
+#include "BaseDecorator.hpp"
 
-class Reverb : public PlayMusic
+class Reverb : public BaseDecorator
 {
-private:
-    PlayMusic* playm;
 public:
     Reverb(PlayMusic* playm);
     ~Reverb();

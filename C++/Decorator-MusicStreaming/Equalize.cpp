@@ -1,8 +1,8 @@
 #include "Equalize.hpp"
 
 Equalize::Equalize(PlayMusic* playm)
+: BaseDecorator(playm)
 {
-    this->playm = playm;
 };
 
 Equalize::~Equalize()

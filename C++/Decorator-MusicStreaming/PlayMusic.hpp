@@ -5,7 +5,6 @@
 
 class PlayMusic
 {
-private:
 public:
     PlayMusic();
     ~PlayMusic();

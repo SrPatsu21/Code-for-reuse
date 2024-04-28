@@ -1,8 +1,8 @@
 #include "Eco.hpp"
 
-Eco::Eco(PlayMusic* playm)
+Eco::Eco(PlayMusic* playm): BaseDecorator(playm)
 {
-    this->playm = playm;
+
 };
 
 Eco::~Eco()

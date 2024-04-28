@@ -1,8 +1,8 @@
 #include "SoundEffects.hpp"
 
 SoundEffects::SoundEffects(PlayMusic* playm)
+: BaseDecorator(playm)
 {
-    this->playm = playm;
 };
 
 SoundEffects::~SoundEffects()

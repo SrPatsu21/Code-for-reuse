@@ -1,12 +1,10 @@
 #ifndef EQUALIZE_HPP
 #define EQUALIZE_HPP
 
-#include "PlayMusic.hpp"
+#include "BaseDecorator.hpp"
 
-class Equalize : public PlayMusic
+class Equalize : public BaseDecorator
 {
-private:
-    PlayMusic* playm;
 public:
     Equalize(PlayMusic* playm);
     ~Equalize();

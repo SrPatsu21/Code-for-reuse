@@ -1,8 +1,7 @@
 #include "Reverb.hpp"
 
-Reverb::Reverb(PlayMusic* playm)
+Reverb::Reverb(PlayMusic* playm): BaseDecorator(playm)
 {
-    this->playm = playm;
 };
 
 Reverb::~Reverb()

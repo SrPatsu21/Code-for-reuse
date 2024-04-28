@@ -1,12 +1,10 @@
 #ifndef SOUNDEFFECTS_HPP
 #define SOUNDEFFECTS_HPP
 
-#include "PlayMusic.hpp"
+#include "BaseDecorator.hpp"
 
-class SoundEffects : public PlayMusic
+class SoundEffects : public BaseDecorator
 {
-private:
-    PlayMusic* playm;
 public:
     SoundEffects(PlayMusic* playm);
     ~SoundEffects();
