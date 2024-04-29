@@ -490,10 +490,14 @@ int manageSwap(TREE** adrs, TREE* tree)
 
 int makeRRAVL(TREE** adrs, TREE* tree)
 {
+    //parent of those
     TREE* root = findParent(*adrs, tree);
+    //node who will be the first
     TREE* treer = tree->right;
+    //if there is a root
     if (NULL != root)
     {
+        //set the new node on a side o the tree
         if (tree == root->left)
         {
             root->left = treer;
@@ -502,96 +506,136 @@ int makeRRAVL(TREE** adrs, TREE* tree)
             root->right = treer;
         }
     }    
-
+    //aux will be transplanted
     TREE* aux = treer->left;
     treer->left = NULL;
+    //remove treer from the tree
     tree->right = NULL;
+    //insert tree on treer
     treer->left = tree;
+    //transplant aux
     transplantTree(root, aux);
-
+    //if it was the root
     if (NULL == root)
     {
+        //change the root parent
         adrs = treer;
     }
 };
 
 int makeLLAVL(TREE** adrs, TREE* tree)
 {
-    // tree->left->root = tree->root;
-
-    // if (NULL != tree->root)
-    // {
-    //     if (tree == tree->root->left)
-    //     {
-    //         tree->root->left = tree->left;
-    //     }else if (tree == tree->root->right)
-    //     {
-    //         tree->root->right = tree->left;
-    //     }
-    // }    
-
-    // tree->root = tree->left;
-    // tree->left = NULL;
-    // reImplantTree(tree->root, tree);
-
-    // if (NULL == tree->root->root)
-    // {
-    //     adrs = tree->root;
-    // }
+    //parent of those
+    TREE* root = findParent(*adrs, tree);
+    //node who will be the first
+    TREE* treer = tree->left;
+    //if there is a root
+    if (NULL != root)
+    {
+        //set the new node on a side o the tree
+        if (tree == root->left)
+        {
+            root->left = treer;
+        }else if (tree == root->right)
+        {
+            root->right = treer;
+        }
+    }    
+    //aux will be transplanted
+    TREE* aux = treer->right;
+    treer->right = NULL;
+    //remove treer from the old tree
+    tree->left = NULL;
+    //insert tree on treer
+    treer->right = tree;
+    //transplant aux
+    transplantTree(root, aux);
+    //if it was the root
+    if (NULL == root)
+    {
+        //change the root parent
+        adrs = treer;
+    }
 };
 
 int makeRLAVL(TREE** adrs, TREE* tree)
 {
-    // tree->right->left->root = tree->root;
-
-    // if (NULL != tree->root)
-    // {
-    //     if (tree == tree->root->left)
-    //     {
-    //         tree->root->left = tree->right->left;
-    //     }else if (tree == tree->root->right)
-    //     {
-    //         tree->root->right = tree->right->left;
-    //     }
-    // }    
-
-    // tree->root = tree->right->left;
-    // tree->right->left = NULL;
-    // reImplantTree(tree->root, tree->right);
-    // tree->right = NULL;
-    // reImplantTree(tree->root, tree);
-
-    // if (NULL == tree->root->root)
-    // {
-    //     adrs = tree->root;
-    // }
+    //parent of those
+    TREE* root = findParent(*adrs, tree);
+    //node who will be the first
+    TREE* treer = tree->right->left;
+    //if there is a root
+    if (NULL != root)
+    {
+        //set the new node on a side o the tree
+        if (tree == root->left)
+        {
+            root->left = treer;
+        }else if (tree == root->right)
+        {
+            root->right = treer;
+        }
+    }    
+    //aux will be transplanted
+    TREE* aux1 = treer->left;
+    treer->left = NULL;
+    TREE* aux2 = treer->right;
+    treer->right = NULL;
+    //remove treer from the old tree
+    tree->right->left = NULL;
+    //insert tree on treer
+    treer->right = tree;
+    treer->left = tree->left;
+    tree->left = NULL;
+    //transplant aux
+    transplantTree(root, aux1);
+    transplantTree(root, aux2);
+    //if it was the root
+    if (NULL == root)
+    {
+        //change the root parent
+        adrs = treer;
+    }    
 };
 
 int makeLRAVL(TREE** adrs, TREE* tree)
 {
-    // tree->left->right->root = tree->root;
-    // 
-    // if (NULL != tree->root)
-    // {
-    //     if (tree == tree->root->left)
-    //     {
-    //         tree->root->left = tree->left->right;
-    //     }else if (tree == tree->root->right)
-    //     {
-    //         tree->root->right = tree->left->right;
-    //     }
-    // }    
-
-    // tree->root = tree->left->right;
-    // tree->left->right = NULL;
-    // reImplantTree(tree->root, tree->left);
-    // tree->left = NULL;
-    // reImplantTree(tree->root, tree);
-
-    // if (NULL == tree->root->root)
-    // {
-    //     adrs = tree->root;
-    // }
+   //parent of those
+    TREE* root = findParent(*adrs, tree);
+    //node who will be the first
+    TREE* treer = tree->left->right;
+    //if there is a root
+    if (NULL != root)
+    {
+        //set the new node on a side o the tree
+        if (tree == root->left)
+        {
+            root->left = treer;
+        }else if (tree == root->right)
+        {
+            root->right = treer;
+        }
+    }    
+    //aux will be transplanted
+    TREE* aux1 = treer->left;
+    treer->left = NULL;
+    TREE* aux2 = treer->right;
+    treer->right = NULL;
+    //remove treer from the old tree
+    tree->left->right = NULL;
+    //insert tree on treer
+    treer->right = tree;
+    treer->left = tree->right;
+    tree->right = NULL;
+    //transplant aux
+    transplantTree(root, aux1);
+    transplantTree(root, aux2);
+    //if it was the root
+    if (NULL == root)
+    {
+        //change the root parent
+        adrs = treer;
+    }
 };
 
 int insertOnTreeAVL(TREE** adrs, TREE* root, int info)
