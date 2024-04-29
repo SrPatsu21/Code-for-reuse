@@ -14,7 +14,7 @@ void freeTree(TREE* root);
 TREE* findParent(TREE* root, TREE* tree);
 int insertOnRightSizeTree(TREE* root, int id);
 int insertOnLeftSizeTree(TREE* root, int id);
-int insertOnTree(TREE* root, int id);
+int insertOnTree(TREE** adrs, TREE* root, int info);
 int transplantTree(TREE* root, TREE* tree);
 int reInplantTree(TREE* main_root, TREE* root, TREE* tree);
 TREE* searchOnTree(TREE* root, int id);
@@ -29,6 +29,8 @@ TREE* minTree(TREE* tree);
 //AVL
 int getTreeSize(TREE* tree);
 int manageSwap(TREE** adrs, TREE* tree);
+int verifyDirectionalAVLTree(TREE** adrs, TREE* tree, int id);
+int verifyAllAVLTree(TREE** adrs, TREE* tree);
 int makeRRAVL(TREE** adrs, TREE* tree);
 int makeLLAVL(TREE** adrs, TREE* tree);
 int makeRLAVL(TREE** adrs, TREE* tree);
@@ -52,7 +54,7 @@ int main(void)
             {
                 printf("set tree id:");
                 scanf("%i", &id);
-                insertOnTree(tree, id);
+                insertOnTreeAVL(&tree, tree, id);
 
             }else if (op == 2)
             {
@@ -88,7 +90,7 @@ int main(void)
         {
             printf("Tree null, init value:\n");
             scanf("%i", &id);
-            tree = createNewTree(id);
+            insertOnTreeAVL(&tree, tree, id);
         }
     }
     freeTree(tree);
@@ -165,27 +167,27 @@ int insertOnLeftSizeTree(TREE* root, int id)
     }
 };
 
-int insertOnTree(TREE* root, int id)
+int insertOnTree(TREE** adrs, TREE* root, int info)
 {
     if (root != NULL)
     {   
-        if (id > root->id)
+        if (info > root->id)
         {
             if (NULL != root->right)
             {
-                insertOnTree(root->right, id);
+                insertOnTree(adrs, root->right, info);
             }else
             {
-                insertOnRightSizeTree(root, id);
+                insertOnRightSizeTree(root, info);
             }
-        }else if(id < root->id)
+        }else if(info < root->id)
         {
             if (NULL != root->left)
             {
-                insertOnTree(root->left, id);
+                insertOnTree(adrs, root->left, info);
             }else
             {
-                insertOnLeftSizeTree(root, id);
+                insertOnLeftSizeTree(root, info);
             }
         }else
         {
@@ -193,9 +195,9 @@ int insertOnTree(TREE* root, int id)
         }
     }else
     {
-        printf("null root\n");
-        return 0;
+        *adrs = createNewTree(info);
     }
+    	    
     return 1;
 };
 
@@ -311,6 +313,7 @@ int removeOnTreeByid(TREE** root, int id)
     TREE* t_root = findParent(*root, t);
     return removeOnTree(root, t, t_root);
 };
+
 int removeOnTree(TREE** root, TREE* tree, TREE* t_root)
 {
     if (NULL != tree)
@@ -436,7 +439,6 @@ TREE* minTree(TREE* tree)
     }
 };
 
-//errado
 int getTreeSize(TREE* tree)
 {
     if (NULL != tree)
@@ -456,33 +458,67 @@ int getTreeSize(TREE* tree)
     }
 };
 
-
-//wont work
 int manageSwap(TREE** adrs, TREE* tree)
-{
+{    
     int r = getTreeSize(tree->right);
-    int l = getTreeSize(tree->left);     
-    if (r > (l+1))
-    {
-        r = getTreeSize(tree->right->right);
-        l = getTreeSize(tree->right->left);     
-        if (r < l)
+    int l = getTreeSize(tree->left);
+    if (r > 1 || l > 1)
+    {    
+        if (r > (l+1))
         {
-            return makeRLAVLadrs(adrs, tree);
-        }else
+            r = getTreeSize(tree->right->right);
+            l = getTreeSize(tree->right->left);   
+  
+            if (r < l)
+            {
+                printf("\nRL\n");
+                return makeRLAVL(adrs, tree);
+            }else
+            {
+                printf("\nRR\n");
+                return makeRRAVL(adrs, tree);
+            }
+        }else if (l > (r+1))
         {
-            return makeRRAVL(adrs, tree);
+            r = getTreeSize(tree->left->right);
+            l = getTreeSize(tree->left->left);   
+  
+            if (r > l)
+            {
+                printf("\nLR\n");
+                return makeLRAVL(adrs, tree);
+            }else
+            {
+                printf("\nLL\n");
+                return makeLLAVL(adrs, tree);
+            }
         }
-    }else if (l < (r+1))
+    }
+    return 0;
+};
+
+int verifyAllAVLTree(TREE** adrs, TREE* tree)
+{
+    if (NULL != tree)
     {
-        r = getTreeSize(tree->left->right);
-        l = getTreeSize(tree->left->left);     
-        if (r > l)
+        manageSwap(adrs, tree);
+        verifyAllAVLTree(adrs, tree->left);
+        verifyAllAVLTree(adrs, tree->right);
+    }
+    return 0;
+}
+
+int verifyDirectionalAVLTree(TREE** adrs, TREE* tree, int id)
+{
+    if (NULL != tree)
+    {
+        manageSwap(adrs, tree);
+        if (id < tree->id)
         {
-            return makeLRAVL(adrs, tree);
-        }else
+            verifyDirectionalAVLTree(adrs, tree->left, id);
+        }else if (id > tree->id)
         {
-            return makeLLAVL(adrs, tree);
+            verifyDirectionalAVLTree(adrs, tree->right, id);
         }
     }
     return 0;
@@ -505,7 +541,11 @@ int makeRRAVL(TREE** adrs, TREE* tree)
         {
             root->right = treer;
         }
-    }    
+    }else
+    {
+        //if it was the root
+        *adrs = treer;
+    } 
     //aux will be transplanted
     TREE* aux = treer->left;
     treer->left = NULL;
@@ -515,12 +555,6 @@ int makeRRAVL(TREE** adrs, TREE* tree)
     treer->left = tree;
     //transplant aux
     transplantTree(root, aux);
-    //if it was the root
-    if (NULL == root)
-    {
-        //change the root parent
-        adrs = treer;
-    }
 };
 
 int makeLLAVL(TREE** adrs, TREE* tree)
@@ -540,6 +574,10 @@ int makeLLAVL(TREE** adrs, TREE* tree)
         {
             root->right = treer;
         }
+    }else
+    {
+        //if it was the root
+        *adrs = treer;
     }    
     //aux will be transplanted
     TREE* aux = treer->right;
@@ -550,12 +588,6 @@ int makeLLAVL(TREE** adrs, TREE* tree)
     treer->right = tree;
     //transplant aux
     transplantTree(root, aux);
-    //if it was the root
-    if (NULL == root)
-    {
-        //change the root parent
-        adrs = treer;
-    }
 };
 
 int makeRLAVL(TREE** adrs, TREE* tree)
@@ -575,7 +607,11 @@ int makeRLAVL(TREE** adrs, TREE* tree)
         {
             root->right = treer;
         }
-    }    
+    }else
+    {
+        //if it was the root
+        *adrs = treer;
+    } 
     //aux will be transplanted
     TREE* aux1 = treer->left;
     treer->left = NULL;
@@ -589,13 +625,7 @@ int makeRLAVL(TREE** adrs, TREE* tree)
     tree->left = NULL;
     //transplant aux
     transplantTree(root, aux1);
-    transplantTree(root, aux2);
-    //if it was the root
-    if (NULL == root)
-    {
-        //change the root parent
-        adrs = treer;
-    }    
+    transplantTree(root, aux2);  
 };
 
 int makeLRAVL(TREE** adrs, TREE* tree)
@@ -615,7 +645,11 @@ int makeLRAVL(TREE** adrs, TREE* tree)
         {
             root->right = treer;
         }
-    }    
+    }else
+    {
+        //if it was the root
+        *adrs = treer;
+    }     
     //aux will be transplanted
     TREE* aux1 = treer->left;
     treer->left = NULL;
@@ -630,47 +664,42 @@ int makeLRAVL(TREE** adrs, TREE* tree)
     //transplant aux
     transplantTree(root, aux1);
     transplantTree(root, aux2);
-    //if it was the root
-    if (NULL == root)
-    {
-        //change the root parent
-        adrs = treer;
-    }
 };
 
 int insertOnTreeAVL(TREE** adrs, TREE* root, int info)
 {
-    // if (root != NULL)
-    // {   
-    //     if (info > root->info)
-    //     {
-    //         if (NULL != root->right)
-    //         {
-    //             insertOnTreeAVL(adrs, root->right, info);
-    //         }else
-    //         {
-    //             insertOnRightSizeTree(root, info);
-    //         }
-    //     }else if(info < root->info)
-    //     {
-    //         if (NULL != root->left)
-    //         {
-    //             insertOnTreeAVL(adrs ,root->left, info);
-    //         }else
-    //         {
-    //             insertOnLeftSizeTree(root, info);
-    //         }
-    //     }else
-    //     {
-    //         return 0;
-    //     }
-    //     manageSwap(adrs, root->root);
-    // }else
-    // {
-    //     adrs = createNewTree(info);
-    // }
+    if (root != NULL)
+    {   
+        if (info > root->id)
+        {
+            if (NULL != root->right)
+            {
+                insertOnTreeAVL(adrs, root->right, info);
+            }else
+            {
+                insertOnRightSizeTree(root, info);
+                verifyDirectionalAVLTree(adrs, *adrs, info);
+            }
+        }else if(info < root->id)
+        {
+            if (NULL != root->left)
+            {
+                insertOnTreeAVL(adrs, root->left, info);
+            }else
+            {
+                insertOnLeftSizeTree(root, info);
+                verifyDirectionalAVLTree(adrs, *adrs, info);
+            }
+        }else
+        {
+            return 0;
+        }
+    }else
+    {
+        *adrs = createNewTree(info);
+    }
     	    
-    // return 1;
+    return 1;
 };
 
 int removeOnTreeAVL(TREE** adrs, TREE* tree)
