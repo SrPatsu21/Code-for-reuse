@@ -708,6 +708,13 @@ int insertOnTreeAVL(TREE** adrs, TREE* root, int info)
     return 1;
 };
 
+int removeOnTreeAVLById(TREE** root, TREE* tree, int id)
+{
+    TREE* t = searchOnTree(*root, id);
+    TREE* t_root = findParent(*root, t);
+    return removeOnTreeAVL(root, t, t_root);
+};
+
 int removeOnTreeAVL(TREE** root, TREE* tree, TREE* t_root)
 {
     if (NULL != tree)
