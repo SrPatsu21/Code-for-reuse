@@ -36,7 +36,8 @@ int makeLLAVL(TREE** adrs, TREE* tree);
 int makeRLAVL(TREE** adrs, TREE* tree);
 int makeLRAVL(TREE** adrs, TREE* tree);
 int insertOnTreeAVL(TREE** adrs, TREE* root, int info);
-int removeOnTreeAVL(TREE** adrs, TREE* tree);
+int removeOnTreeAVLById(TREE** root, TREE* tree, int id);
+int removeOnTreeAVL(TREE** root, TREE* tree, TREE* t_root);
 
 
 
@@ -248,27 +249,30 @@ int reInplantTree(TREE* main_root, TREE* root, TREE* tree)
 
 int transplantTree(TREE* root, TREE* tree)
 {
-    if (tree->id > root->id)
-    {
-        if (NULL != root->right)
+    if (NULL != root && NULL != tree)
+    {    
+        if (tree->id > root->id)
         {
-            transplantTree(root->right, tree);
+            if (NULL != root->right)
+            {
+                transplantTree(root->right, tree);
+            }else
+            {
+                root->right = tree;
+            }
+        }else if(tree->id < root->id)
+        {
+            if (NULL != root->left)
+            {
+                transplantTree(root->left, tree);
+            }else
+            {
+                root->left = tree;
+            }
         }else
         {
-            root->right = tree;
+            return 0;
         }
-    }else if(tree->id < root->id)
-    {
-        if (NULL != root->left)
-        {
-            transplantTree(root->left, tree);
-        }else
-        {
-            root->left = tree;
-        }
-    }else
-    {
-        return 0;
     }
     return 1;
 };
@@ -526,6 +530,7 @@ int verifyDirectionalAVLTree(TREE** adrs, TREE* tree, int id)
 
 int makeRRAVL(TREE** adrs, TREE* tree)
 {
+    printf("t");
     //parent of those
     TREE* root = findParent(*adrs, tree);
     //node who will be the first
@@ -545,7 +550,8 @@ int makeRRAVL(TREE** adrs, TREE* tree)
     {
         //if it was the root
         *adrs = treer;
-    } 
+    }
+    
     //aux will be transplanted
     TREE* aux = treer->left;
     treer->left = NULL;
@@ -554,7 +560,7 @@ int makeRRAVL(TREE** adrs, TREE* tree)
     //insert tree on treer
     treer->left = tree;
     //transplant aux
-    transplantTree(root, aux);
+    transplantTree(treer, aux);
 };
 
 int makeLLAVL(TREE** adrs, TREE* tree)
@@ -587,7 +593,7 @@ int makeLLAVL(TREE** adrs, TREE* tree)
     //insert tree on treer
     treer->right = tree;
     //transplant aux
-    transplantTree(root, aux);
+    transplantTree(treer, aux);
 };
 
 int makeRLAVL(TREE** adrs, TREE* tree)
@@ -624,8 +630,8 @@ int makeRLAVL(TREE** adrs, TREE* tree)
     treer->left = tree->left;
     tree->left = NULL;
     //transplant aux
-    transplantTree(root, aux1);
-    transplantTree(root, aux2);  
+    transplantTree(treer, aux1);
+    transplantTree(treer, aux2);  
 };
 
 int makeLRAVL(TREE** adrs, TREE* tree)
@@ -662,8 +668,8 @@ int makeLRAVL(TREE** adrs, TREE* tree)
     treer->left = tree->right;
     tree->right = NULL;
     //transplant aux
-    transplantTree(root, aux1);
-    transplantTree(root, aux2);
+    transplantTree(treer, aux1);
+    transplantTree(treer, aux2);
 };
 
 int insertOnTreeAVL(TREE** adrs, TREE* root, int info)
@@ -702,7 +708,72 @@ int insertOnTreeAVL(TREE** adrs, TREE* root, int info)
     return 1;
 };
 
-int removeOnTreeAVL(TREE** adrs, TREE* tree)
+int removeOnTreeAVL(TREE** root, TREE* tree, TREE* t_root)
 {
-
+    if (NULL != tree)
+    {
+        if (NULL != t_root)
+        {
+            if (t_root->left == tree)
+            {
+                if (NULL != tree->right)
+                {
+                    t_root->left = tree->right;
+                    if (NULL != tree->left)
+                    {
+                        transplantTree(tree->right, tree->left);
+                    }
+                }else if(NULL != tree->left)
+                {
+                    t_root->left = tree->left;
+                }else
+                {
+                    t_root->left = NULL;
+                }
+                tree->id = 0;
+                free(tree);
+                return 1;
+            }else if (t_root->right == tree)
+            {
+                if (NULL != tree->right)
+                {
+                    t_root->right = tree->right;
+                    if (NULL != tree->left)
+                    {
+                        transplantTree(tree->right, tree->left);
+                    }
+                }else if(NULL != tree->left)
+                {
+                    t_root->right = tree->left;
+                }else
+                {
+                    t_root->right = NULL;
+                }
+                tree->id = 0;
+                free(tree);
+                return 1;
+            }
+        }else
+        {
+            if (*root == tree)
+            {
+                if (NULL != tree->right)
+                {
+                *root = tree->right;
+                if (NULL != tree->left)
+                {
+                    transplantTree(tree->right, tree->left);
+                }
+                }else if(NULL != tree->left)
+                {
+                    *root = tree->left;
+                }
+                tree->id = 0;
+                free(tree);
+                return 1;
+            }
+        }
+    }
+    printf("not found");
+    return 0;
 };
