@@ -79,7 +79,7 @@ int main(void)
             {
                 printf("value to be removed:\n");
                 scanf("%i", &id);
-                removeOnTreeByid(&tree, id);
+                removeOnTreeAVLById(&tree, tree, id);
             }else if (op == 0)
             {
                 printf("exiting...\n");
@@ -530,7 +530,6 @@ int verifyDirectionalAVLTree(TREE** adrs, TREE* tree, int id)
 
 int makeRRAVL(TREE** adrs, TREE* tree)
 {
-    printf("t");
     //parent of those
     TREE* root = findParent(*adrs, tree);
     //node who will be the first
@@ -737,6 +736,7 @@ int removeOnTreeAVL(TREE** root, TREE* tree, TREE* t_root)
                 {
                     t_root->left = NULL;
                 }
+                verifyDirectionalAVLTree(root, *root, t_root->id);
                 tree->id = 0;
                 free(tree);
                 return 1;
@@ -756,6 +756,7 @@ int removeOnTreeAVL(TREE** root, TREE* tree, TREE* t_root)
                 {
                     t_root->right = NULL;
                 }
+                verifyDirectionalAVLTree(root, *root, t_root->id);
                 tree->id = 0;
                 free(tree);
                 return 1;
@@ -775,6 +776,7 @@ int removeOnTreeAVL(TREE** root, TREE* tree, TREE* t_root)
                 {
                     *root = tree->left;
                 }
+                verifyAllAVLTree(root, *root);
                 tree->id = 0;
                 free(tree);
                 return 1;
