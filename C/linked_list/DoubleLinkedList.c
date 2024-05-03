@@ -7,7 +7,7 @@
 typedef struct SNode
 {
     struct SNode* prev;
-    int info;
+    int id;
     struct SNode* prox;
 }NODE;
 //list
@@ -60,12 +60,12 @@ pivot is a reference to where place or remove
 */
 
 //add node on list
-int addNode(LIST* list, int info, NODE* pivot)
+int addNode(LIST* list, int id, NODE* pivot)
 {
     NODE* node = createNode();
     if (node != NULL)
     {
-        node->info = info;
+        node->id = id;
             if(pivot == NULL)
             {
                 if(list->size == 0)
@@ -101,18 +101,18 @@ int addNode(LIST* list, int info, NODE* pivot)
 }
 //other add
     //add head
-    void addHead(LIST* list, int info)
+    void addHead(LIST* list, int id)
     {
-        addNode(list, info, NULL);
+        addNode(list, id, NULL);
     }
     //add tail
-    void addTail(LIST* list, int info)
+    void addTail(LIST* list, int id)
     {
-        addNode(list, info, list->tail);
+        addNode(list, id, list->tail);
     }
 
-//to find some node using info
-NODE* findNode(LIST* list, int info)
+//to find some node using id
+NODE* findNode(LIST* list, int id)
 {
     NODE* node;
     if (list->head != NULL && node != NULL)
@@ -121,7 +121,7 @@ NODE* findNode(LIST* list, int info)
         int i = 1;
         while (i == 1)
         {
-            if (node->info == info)
+            if (node->id == id)
             {
                 i=0;
             }else if(node->prox == NULL)
@@ -144,9 +144,9 @@ NODE* findNode(LIST* list, int info)
     return node;
 }
 //to find the prev of the node
-NODE* findNodePrev(LIST* list, int info)
+NODE* findNodePrev(LIST* list, int id)
 {
-    NODE* node = findNode(list, info);
+    NODE* node = findNode(list, id);
     if (node == NULL)
     {
         return NULL;
@@ -221,7 +221,7 @@ int runList(LIST* list)
         NODE* node = list->head;
         while (node != NULL)
         {
-            printf("%i \n", node->info);
+            printf("%i \n", node->id);
                 node = node->prox;
         }
     }else
@@ -237,7 +237,7 @@ int runBackList(LIST* list)
         NODE* node = list->tail;
         while (node != NULL)
         {
-            printf("%i \n", node->info);
+            printf("%i \n", node->id);
                 node = node->prev;
         }
     }else

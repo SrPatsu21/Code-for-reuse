@@ -19,7 +19,7 @@ int transplantTree(TREE* root, TREE* tree);
 int reInplantTree(TREE* main_root, TREE* root, TREE* tree);
 TREE* searchOnTree(TREE* root, int id);
 TREE* searchLinearOnTree(TREE* root, int id);
-int removeOnTree(TREE** root, TREE* tree, TREE* t_root);
+int removeOnTree(TREE** root, TREE* tree, TREE* tree_root);
 int removeOnTreeByid(TREE** root, int id);
 int printInOrderTree(TREE* root);
 int printPreOrderTree(TREE* root);
@@ -298,49 +298,50 @@ TREE* searchLinearOnTree(TREE* root, int id)
 int removeOnTreeByid(TREE** root, int id)
 {
     TREE* t = searchOnTree(*root, id);
-    TREE* t_root = findParent(*root, t);
-    return removeOnTree(root, t, t_root);
+    TREE* tree_root = findParent(*root, t);
+    return removeOnTree(root, t, tree_root);
 };
-int removeOnTree(TREE** root, TREE* tree, TREE* t_root)
+
+int removeOnTree(TREE** root, TREE* tree, TREE* tree_root)
 {
     if (NULL != tree)
     {
-        if (NULL != t_root)
+        if (NULL != tree_root)
         {
-            if (t_root->left == tree)
+            if (tree_root->left == tree)
             {
                 if (NULL != tree->right)
                 {
-                    t_root->left = tree->right;
+                    tree_root->left = tree->right;
                     if (NULL != tree->left)
                     {
                         transplantTree(tree->right, tree->left);
                     }
                 }else if(NULL != tree->left)
                 {
-                    t_root->left = tree->left;
+                    tree_root->left = tree->left;
                 }else
                 {
-                    t_root->left = NULL;
+                    tree_root->left = NULL;
                 }
                 tree->id = 0;
                 free(tree);
                 return 1;
-            }else if (t_root->right == tree)
+            }else if (tree_root->right == tree)
             {
                 if (NULL != tree->right)
                 {
-                    t_root->right = tree->right;
+                    tree_root->right = tree->right;
                     if (NULL != tree->left)
                     {
                         transplantTree(tree->right, tree->left);
                     }
                 }else if(NULL != tree->left)
                 {
-                    t_root->right = tree->left;
+                    tree_root->right = tree->left;
                 }else
                 {
-                    t_root->right = NULL;
+                    tree_root->right = NULL;
                 }
                 tree->id = 0;
                 free(tree);
@@ -367,7 +368,6 @@ int removeOnTree(TREE** root, TREE* tree, TREE* t_root)
             }
         }
     }
-    printf("not found");
     return 0;
 };
 

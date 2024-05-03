@@ -10,7 +10,7 @@ This is just a more efficient solution.
 //node
 typedef struct SNode
 {
-    int info;
+    int id;
     struct SNode* prox;
 }NODE;
 //list
@@ -54,12 +54,12 @@ NODE* createNode()
 
 //Node operations
 //add node on queue
-int addNode(LIST* list, int info)
+int addNode(LIST* list, int id)
 {
     NODE* node = createNode();
     if (node != NULL)
     {
-        node->info = info;
+        node->id = id;
 
         node->prox = NULL;
         if(list->tail == NULL)
@@ -80,8 +80,8 @@ int addNode(LIST* list, int info)
     }
     
 }
-//to find some node using info
-NODE* findNode(LIST* list, int info)
+//to find some node using id
+NODE* findNode(LIST* list, int id)
 {
     NODE* node;
     if (list->head != NULL)
@@ -90,7 +90,7 @@ NODE* findNode(LIST* list, int info)
         int i = 1;
         while (i == 1)
         {
-            if (node->info == info)
+            if (node->id == id)
             {
                 i=0;
             }else if(node->prox == NULL)
@@ -109,7 +109,7 @@ NODE* findNode(LIST* list, int info)
     return node;
 }
 //to find the prev of the node
-NODE* findNodePrev(LIST* list, int info)
+NODE* findNodePrev(LIST* list, int id)
 {
     NODE* node;
     NODE* prev = NULL;
@@ -119,7 +119,7 @@ NODE* findNodePrev(LIST* list, int info)
         int i = 1;
         while (i == 1)
         {
-            if (node->info == info)
+            if (node->id == id)
             {
                 i=0;
             }else if(node->prox == NULL)
@@ -166,7 +166,7 @@ int runList(LIST* list)
         NODE* node = list->head;
         while (node != NULL)
         {
-            printf("%i \n", node->info);
+            printf("%i \n", node->id);
                 node = node->prox;
         }
     }else

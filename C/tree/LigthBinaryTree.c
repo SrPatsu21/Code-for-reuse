@@ -6,18 +6,18 @@ typedef struct Tree
 {
     struct Tree* right;
     struct Tree* left;
-    int info;
+    int id;
 }TREE;
 
-TREE* createNewTree(int info);
+TREE* createNewTree(int id);
 void freeTree(TREE* root);
 TREE* findRoot(TREE* tree);
-int insertOnRightSizeTree(TREE* root, int info);
-int insertOnLeftSizeTree(TREE* root, int info);
-int insertOnTree(TREE** adrs, TREE* root, int info);
+int insertOnRightSizeTree(TREE* root, int id);
+int insertOnLeftSizeTree(TREE* root, int id);
+int insertOnTree(TREE** adrs, TREE* root, int id);
 int transplantTree(TREE* root, TREE* tree, TREE* src);
-TREE* searchOnTree(TREE* root, int info);
-TREE* searchLinearOnTree(TREE* root, int info);
+TREE* searchOnTree(TREE* root, int id);
+TREE* searchLinearOnTree(TREE* root, int id);
 int removeOnTree(TREE* root, TREE* tree);
 int printInOrderTree(TREE* root);
 int printPreOrderTree(TREE* root);
@@ -29,18 +29,18 @@ TREE* minTree(TREE* tree);
 int main(void)
 {
     TREE* tree = NULL;
-    int op = -1, info = 0;
+    int op = -1, id = 0;
     while (op != 0)
     {
         if (NULL != tree)
         {
-            printf("-------------------------------\n 1 insert \n 2 print in order \n 3 print post order \n 4 print pre order \n 5 max info \n 6 mim info \n 7 remove \n 0 exit \n-------------------------------\n");
+            printf("-------------------------------\n 1 insert \n 2 print in order \n 3 print post order \n 4 print pre order \n 5 max id \n 6 mim id \n 7 remove \n 0 exit \n-------------------------------\n");
             scanf("%i", &op);
             if (op == 1)
             {
-                printf("set tree info:");
-                scanf("%i", &info);
-                insertOnTree(&tree, tree, info);
+                printf("set tree id:");
+                scanf("%i", &id);
+                insertOnTree(&tree, tree, id);
 
             }else if (op == 2)
             {
@@ -56,15 +56,15 @@ int main(void)
                 printf("\n");
             }else if (op == 5)
             {
-                printf("%i\n", maxTree(tree)->info);
+                printf("%i\n", maxTree(tree)->id);
             }else if (op == 6)
             {
-                printf("%i\n", minTree(tree)->info);
+                printf("%i\n", minTree(tree)->id);
             }else if (op == 7)
             {
                 printf("value to be removed:\n");
-                scanf("%i", &info);
-                removeOnTree(tree, searchOnTree(tree, info));
+                scanf("%i", &id);
+                removeOnTree(tree, searchOnTree(tree, id));
             }else if (op == 0)
             {
                 printf("exiting...\n");
@@ -75,15 +75,15 @@ int main(void)
         }else
         {
             printf("Tree null, init value:\n");
-            scanf("%i", &info);
-            insertOnTree(&tree, tree, info);
+            scanf("%i", &id);
+            insertOnTree(&tree, tree, id);
         }
     }
     freeTree(tree);
     return 0;
 };
 
-TREE* createNewTree(int info)
+TREE* createNewTree(int id)
 {
     TREE* tree;
     tree = (struct Tree*) malloc(sizeof(TREE));
@@ -91,7 +91,7 @@ TREE* createNewTree(int info)
     {
         tree->left = NULL;
         tree->right = NULL;
-        tree->info = info;
+        tree->id = id;
     }
     return tree;
 };
@@ -111,7 +111,7 @@ int printInOrderTree(TREE* root)
     if (root != NULL) 
     {
         printInOrderTree(root->left);
-        printf("%i,", root->info);
+        printf("%i,", root->id);
         printInOrderTree(root->right);
     }
     return 0;
@@ -121,7 +121,7 @@ int printPreOrderTree(TREE* root)
 {
     if (root != NULL)
     {
-        printf("%i,", root->info);
+        printf("%i,", root->id);
         printPreOrderTree(root->left);
         printPreOrderTree(root->right);
     }
@@ -134,7 +134,7 @@ int printPostOrderTree(TREE* root)
     {
         printPostOrderTree(root->left);
         printPostOrderTree(root->right);
-        printf("%i,", root->info);
+        printf("%i,", root->id);
     }
     return 0;
 };
@@ -161,9 +161,9 @@ TREE* minTree(TREE* tree)
     }
 };
 
-int insertOnRightSizeTree(TREE* root, int info)
+int insertOnRightSizeTree(TREE* root, int id)
 {
-    TREE* newtree = createNewTree(info);
+    TREE* newtree = createNewTree(id);
     if (newtree != NULL)
     {
         root->right = newtree;
@@ -174,9 +174,9 @@ int insertOnRightSizeTree(TREE* root, int info)
     }
 };
 
-int insertOnLeftSizeTree(TREE* root, int info)
+int insertOnLeftSizeTree(TREE* root, int id)
 {
-    TREE* newtree = createNewTree(info);
+    TREE* newtree = createNewTree(id);
     if (newtree != NULL)
     {
         root->left = newtree;
@@ -187,27 +187,27 @@ int insertOnLeftSizeTree(TREE* root, int info)
     }
 };
 
-int insertOnTree(TREE** adrs, TREE* root, int info)
+int insertOnTree(TREE** adrs, TREE* root, int id)
 {
     if (root != NULL)
     {   
-        if (info > root->info)
+        if (id > root->id)
         {
             if (NULL != root->right)
             {
-                insertOnTree(adrs, root->right, info);
+                insertOnTree(adrs, root->right, id);
             }else
             {
-                insertOnRightSizeTree(root, info);
+                insertOnRightSizeTree(root, id);
             }
-        }else if(info < root->info)
+        }else if(id < root->id)
         {
             if (NULL != root->left)
             {
-                insertOnTree(adrs, root->left, info);
+                insertOnTree(adrs, root->left, id);
             }else
             {
-                insertOnLeftSizeTree(root, info);
+                insertOnLeftSizeTree(root, id);
             }
         }else
         {
@@ -215,36 +215,36 @@ int insertOnTree(TREE** adrs, TREE* root, int info)
         }
     }else
     {
-        (*adrs) = createNewTree(info);
+        (*adrs) = createNewTree(id);
     }
     return 1;
 };
 
-TREE* searchOnTree(TREE* root, int info)
+TREE* searchOnTree(TREE* root, int id)
 {
-    if(info == root->info)
+    if(id == root->id)
     {
         return root;
     }else
     {        
-        if (NULL != root->left && info < root->info)
+        if (NULL != root->left && id < root->id)
         {
-            return searchOnTree(root->left, info);
-        }else if(NULL != root->right && info > root->info)
+            return searchOnTree(root->left, id);
+        }else if(NULL != root->right && id > root->id)
         {
-            return searchOnTree(root->right,info);
+            return searchOnTree(root->right,id);
         }
     }
 };
 
-TREE* searchLinearOnTree(TREE* root, int info)
+TREE* searchLinearOnTree(TREE* root, int id)
 {
-    while (info != root->info && NULL != root)
+    while (id != root->id && NULL != root)
     {
-        if (NULL != root->left && info < root->info)
+        if (NULL != root->left && id < root->id)
         {
             root = root->left;
-        }else if(NULL != root->right && info > root->info)
+        }else if(NULL != root->right && id > root->id)
         {
             root = root->right;
         }else{
@@ -261,10 +261,10 @@ TREE* findParent(TREE* root, TREE* tree)
         if (root->right == tree || root->left == tree)
         {
             return root;
-        }else if (root->info < tree->info)
+        }else if (root->id < tree->id)
         {
             return findParent(root->left, tree);
-        }else if (root->info > tree->info)
+        }else if (root->id > tree->id)
         {
             return findParent(root->right, tree);
         }
@@ -299,7 +299,7 @@ int removeOnTree(TREE* root, TREE* tree)
     {
         transplantTree(root, tree, tree->left);
     } else
-     {
+    {
         aux = minTree(tree->right);
         if (aux != tree->right)
         {
