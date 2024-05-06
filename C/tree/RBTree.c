@@ -98,7 +98,7 @@ TREE* createNewTree(int id)
         tree->left = NULL;
         tree->right = NULL;
         tree->id = id;
-        tree->red = 0;
+        tree->red = 1;
     }
     return tree;
 };
@@ -165,29 +165,24 @@ int insertOnLeftSizeTree(TREE* root, int id)
     }
 };
 
-int ifSonIsBlack(TREE* tree)
+int RBFixUp(TREE** root, TREE* tree)
 {
     if (NULL != tree)
     {
-        if (NULL != tree->root)
+        if (tree->root != NULL)
         {
-            if (tree->root->red == 0)
+            while (1 == tree->root->red)
             {
-                if (tree->left != NULL && tree->right != NULL)
+                if (tree->root = tree->root->root->left)
                 {
-                    if (tree->left->red == 0 && tree->right->red == 0)
-                    {
-                        tree->red = 1;
-                    }
+                    TREE* aux = tree->root->root->right;
+                }else   
+                {
+                    TREE* aux = tree->root->root->left;
                 }
+                
             }
-            
         }
-        
-
-    }else
-    {
-        return -1 ;
     }
 }
 
@@ -217,6 +212,7 @@ int insertOnRBTree(TREE** adrs, TREE* root, int id)
         {
             return 0;
         }
+        //RBFixUp
     }else
     {
         (*adrs) = createNewTree(id);
