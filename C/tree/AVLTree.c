@@ -350,36 +350,25 @@ int getTreeSize(TREE* tree)
 
 int manageSwap(TREE** adrs, TREE* tree)
 {    
-    int r = getTreeSize(tree->right);
-    int l = getTreeSize(tree->left);
-    if (r > 1 || l > 1)
+    int balance = getTreeSize(tree->left) - getTreeSize(tree->right);
+    if (balance > 1 || balance < -1)
     {    
-        if (r > (l+1))
-        {
-            r = getTreeSize(tree->right->right);
-            l = getTreeSize(tree->right->left);   
-  
-            if (r < l)
+        if(balance < -1)
+        { 
+            if (getTreeSize(tree->right->right) < getTreeSize(tree->right->left))
             {
-                printf("\nRL\n");
                 return makeRLAVL(adrs, tree);
             }else
             {
-                printf("\nRR\n");
                 return makeRRAVL(adrs, tree);
             }
-        }else if (l > (r+1))
+        }else
         {
-            r = getTreeSize(tree->left->right);
-            l = getTreeSize(tree->left->left);   
-  
-            if (r > l)
+            if (getTreeSize(tree->right->right) > getTreeSize(tree->right->left))
             {
-                printf("\nLR\n");
                 return makeLRAVL(adrs, tree);
             }else
             {
-                printf("\nLL\n");
                 return makeLLAVL(adrs, tree);
             }
         }

@@ -14,8 +14,8 @@ typedef struct Tree
 TREE* createNewTree(int id);
 void freeTree(TREE* root);
 TREE* findRoot(TREE* tree);
-int insertOnRightSizeTree(TREE* root, int id);
-int insertOnLeftSizeTree(TREE* root, int id);
+int insertOnRightSizeTree(TREE** adrs, TREE* root, int id);
+int insertOnLeftSizeTree(TREE** adrs, TREE* root, int id);
 int insertOnRBTree(TREE** adrs, TREE* root, int id);
 int reInplantTree(TREE* root, TREE* tree);
 int transplantTree(TREE* root, TREE* tree);
@@ -136,13 +136,14 @@ TREE* findParent(TREE* root, TREE* tree)
     }
 };
 
-int insertOnRightSizeTree(TREE* root, int id)
+int insertOnRightSizeTree(TREE** adrs, TREE* root, int id)
 {
     TREE* newtree = createNewTree(id);
     if (newtree != NULL)
     {
         root->right = newtree;
         root->right->root = root;
+        RBFixUp(adrs, newtree);
         return 1;
     }else
     {
@@ -150,13 +151,14 @@ int insertOnRightSizeTree(TREE* root, int id)
     }
 };
 
-int insertOnLeftSizeTree(TREE* root, int id)
+int insertOnLeftSizeTree(TREE** adrs,TREE* root, int id)
 {
     TREE* newtree = createNewTree(id);
     if (newtree != NULL)
     {
         root->left = newtree;
         root->left->root = root;
+        RBFixUp(adrs, newtree);
         return 1;
     }else
     {
@@ -169,18 +171,63 @@ int RBFixUp(TREE** root, TREE* tree)
 {
     if (NULL != tree)
     {
-        if (tree->root != NULL)
+        if (NULL != tree->root)
         {
+            //while root = red
             while (1 == tree->root->red)
             {
-                if (tree->root = tree->root->root->left)
+                //if tree root is on left
+                if (tree->root == tree->root->root->left)
                 {
+                    //the other side of the tree
                     TREE* aux = tree->root->root->right;
+                    //if the other side is not null and red
+                    if (NULL != aux && 1 == aux->red)
+                    {
+                        //???
+                        tree->root->red = 0;
+                        aux->red = 0;
+                        tree->root->root->red = 1;
+                        tree = tree->root->root;
+                    //if the other side are NULL or black (is the same )
+                    }else
+                    {
+                        //if tree igual to left side of its root
+                        if (tree == tree->root->right) 
+                        {
+                            tree = tree->root;
+                            LEFT_ROTATE(root, tree);
+                        }
+                        tree->root->red = 0;
+                        tree->root->root->red = 1;
+                        RIGHT_ROTATE(root, tree->root->root);
+                    }
+                //tree root is on right
                 }else   
                 {
                     TREE* aux = tree->root->root->left;
+                    //if the other side is not null and red
+                    if (NULL != aux && 1 == aux->red) 
+                    {
+                        //???
+                        tree->root->red = 0;
+                        aux->red = 0;
+                        tree->root->root->red = 1;
+                        tree = tree->root->root;
+                    //if the other side are NULL or black (is the same )
+                    } else 
+                    {
+                        //if tree igual to left side of its root
+                        if (tree == tree->root->left) 
+                        {
+                            tree = tree->root;
+                            RIGHT_ROTATE(root, tree);
+                        }
+                        tree->root->red = 0;
+                        tree->root->root->red = 1;
+                        LEFT_ROTATE(root, tree->root->root);
+                    }
                 }
-                
             }
         }
     }
@@ -197,7 +244,7 @@ int insertOnRBTree(TREE** adrs, TREE* root, int id)
                 insertOnRBTree(adrs, root->right, id);
             }else
             {
-                insertOnRightSizeTree(root, id);
+                insertOnRightSizeTree(adrs, root, id);
             }
         }else if(id < root->id)
         {
@@ -206,13 +253,12 @@ int insertOnRBTree(TREE** adrs, TREE* root, int id)
                 insertOnRBTree(adrs, root->left, id);
             }else
             {
-                insertOnLeftSizeTree(root, id);
+                insertOnLeftSizeTree(adrs, root, id);
             }
         }else
         {
             return 0;
         }
-        //RBFixUp
     }else
     {
         (*adrs) = createNewTree(id);
