@@ -28,6 +28,8 @@ int printPreOrderTree(TREE* root);
 int printPostOrderTree(TREE* root);
 TREE* maxTree(TREE* tree);
 TREE* minTree(TREE* tree);
+int rightRotate(TREE** adrs, TREE* tree);
+int leftRotate(TREE** adrs, TREE* tree);
 
 
 int main(void)
@@ -167,7 +169,7 @@ int insertOnLeftSizeTree(TREE** adrs,TREE* root, int id)
     }
 };
 
-int RBFixUp(TREE** root, TREE* tree)
+int RBFixUp(TREE** adrs, TREE* tree)
 {
     if (NULL != tree)
     {
@@ -196,11 +198,11 @@ int RBFixUp(TREE** root, TREE* tree)
                         if (tree == tree->root->right) 
                         {
                             tree = tree->root;
-                            LEFT_ROTATE(root, tree);
+                            leftRotate(adrs, tree);
                         }
                         tree->root->red = 0;
                         tree->root->root->red = 1;
-                        RIGHT_ROTATE(root, tree->root->root);
+                        rightRotate(adrs, tree->root->root);
                     }
                 //tree root is on right
                 }else   
@@ -221,11 +223,11 @@ int RBFixUp(TREE** root, TREE* tree)
                         if (tree == tree->root->left) 
                         {
                             tree = tree->root;
-                            RIGHT_ROTATE(root, tree);
+                            rightRotate(adrs, tree);
                         }
                         tree->root->red = 0;
                         tree->root->root->red = 1;
-                        LEFT_ROTATE(root, tree->root->root);
+                        leftRotate(adrs, tree->root->root);
                     }
                 }
             }
@@ -505,4 +507,43 @@ TREE* minTree(TREE* tree)
     {
         return tree;
     }
+};
+
+int rightRotate(TREE** adrs, TREE* tree)
+{
+    TREE* aux = tree->left;
+    tree->left = aux->right;
+    if (aux->right != NULL)
+    {
+        aux->right->root = tree;
+    }
+    aux->root = tree->root;
+    if (tree->root == NULL) {
+        *adrs = aux;
+    } else if (tree == tree->root->right) {
+        tree->root->right = aux;
+    } else {
+        tree->root->left = aux;
+    }
+    aux->right = tree;
+    tree->root = aux;    
+};
+
+int leftRotate(TREE** adrs, TREE* tree)
+{
+    TREE* aux = tree->right;
+    tree->right = aux->left;
+    if (aux->left != NULL) {
+        aux->left->root = tree;
+    }
+    aux->root = tree->root;
+    if (tree->root == NULL) {
+        *adrs = aux;
+    } else if (tree == tree->root->left) {
+        tree->root->left = aux;
+    } else {
+        tree->root->right = aux;
+    }
+    aux->left = tree;
+    tree->root = aux;
 };
