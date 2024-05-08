@@ -511,18 +511,26 @@ TREE* minTree(TREE* tree)
 
 int rightRotate(TREE** adrs, TREE* tree)
 {
+    //aux = left
     TREE* aux = tree->left;
+    //tree left = aux right
     tree->left = aux->right;
     if (aux->right != NULL)
     {
         aux->right->root = tree;
     }
     aux->root = tree->root;
-    if (tree->root == NULL) {
+    //if root = null : first
+    if (tree->root == NULL) 
+    {
         *adrs = aux;
-    } else if (tree == tree->root->right) {
+    // if root right = tree
+    } else if (tree == tree->root->right) 
+    {
         tree->root->right = aux;
-    } else {
+    //if root left = tree
+    } else 
+    {
         tree->root->left = aux;
     }
     aux->right = tree;
