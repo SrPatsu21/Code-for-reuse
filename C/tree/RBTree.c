@@ -18,7 +18,7 @@ int insertOnRightSizeTree(TREE** adrs, TREE* root, int id);
 int insertOnLeftSizeTree(TREE** adrs, TREE* root, int id);
 int insertOnRBTree(TREE** adrs, TREE* root, int id);
 int reInplantTree(TREE* root, TREE* tree);
-int transplantTree(TREE* root, TREE* tree);
+int transplantTree(TREE** adrs, TREE* root, TREE* tree);
 TREE* searchOnTree(TREE* root, int id);
 TREE* searchLinearOnTree(TREE* root, int id);
 int removeOnRBTree(TREE** root, TREE* tree, TREE* tree_root);
@@ -255,31 +255,22 @@ int reInplantTree(TREE* root, TREE* tree)
     return 1;
 };
 
-int transplantTree(TREE* root, TREE* tree)
+int transplantTree(TREE** adrs, TREE* root, TREE* tree)
 {
-    if (tree->id > root->id)
+    if (root->root == NULL) 
     {
-        if (NULL != root->right)
-        {
-            transplantTree(root->right, tree);
-        }else
-        {
-            root->right = tree;
-        }
-    }else if(tree->id < root->id)
+        *adrs = tree;
+    } else if (root == root->root->left)
     {
-        if (NULL != root->left)
-        {
-            transplantTree(root->left, tree);
-        }else
-        {
-            root->left = tree;
-        }
-    }else
+        root->root->left = tree;
+    } else
     {
-        return 0;
+        root->root->right = tree;
     }
-    return 1;
+    if (root != NULL) 
+    {
+        root->root = tree->root;
+    }
 };
 
 TREE* searchOnTree(TREE* root, int id)
@@ -325,71 +316,81 @@ int removeOnRBTreeByid(TREE** root, int id)
 
 int removeOnRBTree(TREE** root, TREE* tree, TREE* tree_root)
 {
-    if (NULL != tree)
-    {
-        if (NULL != tree_root)
-        {
-            if (tree_root->left == tree)
-            {
-                if (NULL != tree->right)
-                {
-                    tree_root->left = tree->right;
-                    if (NULL != tree->left)
-                    {
-                        transplantTree(tree->right, tree->left);
-                    }
-                }else if(NULL != tree->left)
-                {
-                    tree_root->left = tree->left;
-                }else
-                {
-                    tree_root->left = NULL;
-                }
-                tree->id = 0;
-                free(tree);
-            }else if (tree_root->right == tree)
-            {
-                if (NULL != tree->right)
-                {
-                    tree_root->right = tree->right;
-                    if (NULL != tree->left)
-                    {
-                        transplantTree(tree->right, tree->left);
-                    }
-                }else if(NULL != tree->left)
-                {
-                    tree_root->right = tree->left;
-                }else
-                {
-                    tree_root->right = NULL;
-                }
-                tree->id = 0;
-                free(tree);
-            }
-        }else
-        {
-            if (*root == tree)
-            {
-                if (NULL != tree->right)
-                {
-                *root = tree->right;
-                if (NULL != tree->left)
-                {
-                    transplantTree(tree->right, tree->left);
-                }
-                }else if(NULL != tree->left)
-                {
-                    *root = tree->left;
-                }
-                tree->id = 0;
-                free(tree);
-            }
-        }
-        // if (y_original_color == false) {
-        //     RB_DELETE_FIXUP(root, x);
-        // }
-        return 1;
-    }
+    // if (NULL != tree)
+    // {
+    //     TREE* auxx = tree;
+    //     char color = tree->red;
+    //     if (NULL != tree_root)
+    //     {
+    //         if (NULL == tree->left)
+    //         {
+    //             auxx = tree->right;
+    //         }else if (NULL == tree->right)
+    //         {
+    //             auxx = tree->left;
+    //         }
+    //         if (tree_root->left == tree)
+    //         {
+    //             if (NULL != tree->right)
+    //             {
+    //                 tree_root->left = tree->right;
+    //                 if (NULL != tree->left)
+    //                 {
+    //                     transplantTree(tree->right, tree->left);
+    //                 }
+    //             }else if(NULL != tree->left)
+    //             {
+    //                 tree_root->left = tree->left;
+    //             }else
+    //             {
+    //                 tree_root->left = NULL;
+    //             }
+    //             tree->id = 0;
+    //             free(tree);
+    //         }else if (tree_root->right == tree)
+    //         {
+    //             if (NULL != tree->right)
+    //             {
+    //                 tree_root->right = tree->right;
+    //                 if (NULL != tree->left)
+    //                 {
+    //                     auxx = tree->right;
+    //                     transplantTree(tree->right, tree->left);
+    //                 }
+    //             }else if(NULL != tree->left)
+    //             {
+    //                 tree_root->right = tree->left;
+    //             }else
+    //             {
+    //                 tree_root->right = NULL;
+    //             }
+    //             tree->id = 0;
+    //             free(tree);
+    //         }
+    //     }else
+    //     {
+    //         if (*root == tree)
+    //         {
+    //             if (NULL != tree->right)
+    //             {
+    //             *root = tree->right;
+    //             if (NULL != tree->left)
+    //             {
+    //                 transplantTree(tree->right, tree->left);
+    //             }
+    //             }else if(NULL != tree->left)
+    //             {
+    //                 *root = tree->left;
+    //             }
+    //             tree->id = 0;
+    //             free(tree);
+    //         }
+    //     }
+    //     // if (y_original_color == false) {
+    //     //     RB_DELETE_FIXUP(root, x);
+    //     // }
+    //     return 1;
+    // }
 
 };
 
