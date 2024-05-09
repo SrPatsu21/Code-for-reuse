@@ -30,6 +30,10 @@ TREE* maxTree(TREE* tree);
 TREE* minTree(TREE* tree);
 int rightRotate(TREE** adrs, TREE* tree);
 int leftRotate(TREE** adrs, TREE* tree);
+void printRBTree(TREE* tree, int level);
+void RBInsertFixUp(TREE** adrs, TREE* tree);
+void RBRemoveFixUp(TREE** adrs, TREE* tree);
+
 
 
 int main(void)
@@ -145,7 +149,7 @@ int insertOnRightSizeTree(TREE** adrs, TREE* root, int id)
     {
         root->right = newtree;
         root->right->root = root;
-        RBFixUp(adrs, newtree);
+        RBInsertFixUp(adrs, newtree);
         return 1;
     }else
     {
@@ -160,7 +164,7 @@ int insertOnLeftSizeTree(TREE** adrs,TREE* root, int id)
     {
         root->left = newtree;
         root->left->root = root;
-        RBFixUp(adrs, newtree);
+        RBInsertFixUp(adrs, newtree);
         return 1;
     }else
     {
@@ -168,72 +172,6 @@ int insertOnLeftSizeTree(TREE** adrs,TREE* root, int id)
         return 0;
     }
 };
-
-int RBFixUp(TREE** adrs, TREE* tree)
-{
-    if (NULL != tree)
-    {
-        if (NULL != tree->root)
-        {
-            //while root = red
-            while (1 == tree->root->red)
-            {
-                //if tree root is on left
-                if (tree->root == tree->root->root->left)
-                {
-                    //the other side of the tree
-                    TREE* aux = tree->root->root->right;
-                    //if the other side is not null and red
-                    if (NULL != aux && 1 == aux->red)
-                    {
-                        //???
-                        tree->root->red = 0;
-                        aux->red = 0;
-                        tree->root->root->red = 1;
-                        tree = tree->root->root;
-                    //if the other side are NULL or black (is the same )
-                    }else
-                    {
-                        //if tree igual to left side of its root
-                        if (tree == tree->root->right) 
-                        {
-                            tree = tree->root;
-                            leftRotate(adrs, tree);
-                        }
-                        tree->root->red = 0;
-                        tree->root->root->red = 1;
-                        rightRotate(adrs, tree->root->root);
-                    }
-                //tree root is on right
-                }else   
-                {
-                    TREE* aux = tree->root->root->left;
-                    //if the other side is not null and red
-                    if (NULL != aux && 1 == aux->red) 
-                    {
-                        //???
-                        tree->root->red = 0;
-                        aux->red = 0;
-                        tree->root->root->red = 1;
-                        tree = tree->root->root;
-                    //if the other side are NULL or black (is the same )
-                    } else 
-                    {
-                        //if tree igual to left side of its root
-                        if (tree == tree->root->left) 
-                        {
-                            tree = tree->root;
-                            rightRotate(adrs, tree);
-                        }
-                        tree->root->red = 0;
-                        tree->root->root->red = 1;
-                        leftRotate(adrs, tree->root->root);
-                    }
-                }
-            }
-        }
-    }
-}
 
 int insertOnRBTree(TREE** adrs, TREE* root, int id)
 {
@@ -409,7 +347,6 @@ int removeOnRBTree(TREE** root, TREE* tree, TREE* tree_root)
                 }
                 tree->id = 0;
                 free(tree);
-                return 1;
             }else if (tree_root->right == tree)
             {
                 if (NULL != tree->right)
@@ -428,7 +365,6 @@ int removeOnRBTree(TREE** root, TREE* tree, TREE* tree_root)
                 }
                 tree->id = 0;
                 free(tree);
-                return 1;
             }
         }else
         {
@@ -447,11 +383,14 @@ int removeOnRBTree(TREE** root, TREE* tree, TREE* tree_root)
                 }
                 tree->id = 0;
                 free(tree);
-                return 1;
             }
         }
+        // if (y_original_color == false) {
+        //     RB_DELETE_FIXUP(root, x);
+        // }
+        return 1;
     }
-    return 0;
+
 };
 
 int printInOrderTree(TREE* root)
@@ -555,3 +494,156 @@ int leftRotate(TREE** adrs, TREE* tree)
     aux->left = tree;
     tree->root = aux;
 };
+
+// Function to print a Red-Black tree
+void printRBTree(TREE* tree, int level)
+{
+    if (tree == NULL) {
+        return;
+    }
+
+    // Increase distance between levels
+    level += 10;
+
+    // Process right child first
+    printRBTree(tree->right, level);
+
+    // Print current node after space
+    // count
+    printf("\n");
+    for (int i = 10; i < level; i++) {
+        printf(" ");
+    }
+    if (tree->red == '1') {
+        printf("%d(R)", tree->id);
+    } else {
+        printf("%d(B)", tree->id);
+    }
+
+    // Process left child
+    printRBTree(tree->left, level);
+};
+
+void RBInsertFixUp(TREE** adrs, TREE* tree)
+{
+    if (NULL != tree)
+    {
+        if (NULL != tree->root)
+        {
+            //while root = red
+            while (1 == tree->root->red)
+            {
+                //if tree root is on left
+                if (tree->root == tree->root->root->left)
+                {
+                    //the other side of the tree
+                    TREE* aux = tree->root->root->right;
+                    //if the other side is not null and red
+                    if (NULL != aux && 1 == aux->red)
+                    {
+                        //fix
+                        tree->root->red = 0;
+                        aux->red = 0;
+                        tree->root->root->red = 1;
+                        tree = tree->root->root;
+                    //if the other side are NULL or black (is the same )
+                    }else
+                    {
+                        //if tree igual to left side of its root
+                        if (tree == tree->root->right) 
+                        {
+                            tree = tree->root;
+                            leftRotate(adrs, tree);
+                        }
+                        //dont know why
+                        tree->root->red = 0;
+                        tree->root->root->red = 1;
+                        rightRotate(adrs, tree->root->root);
+                    }
+                //tree root is on right
+                }else   
+                {
+                    TREE* aux = tree->root->root->left;
+                    //if the other side is not null and red
+                    if (NULL != aux && 1 == aux->red) 
+                    {
+                        //fix
+                        tree->root->red = 0;
+                        aux->red = 0;
+                        tree->root->root->red = 1;
+                        tree = tree->root->root;
+                    //if the other side are NULL or black (is the same )
+                    } else 
+                    {
+                        //if tree igual to left side of its root
+                        if (tree == tree->root->left) 
+                        {
+                            tree = tree->root;
+                            rightRotate(adrs, tree);
+                        }
+                        //dont know why
+                        tree->root->red = 0;
+                        tree->root->root->red = 1;
+                        leftRotate(adrs, tree->root->root);
+                    }
+                }
+            }
+        }
+    }
+};
+
+// void RBRemoveFixUp(TREE** adrs, TREE* tree)
+// {
+//     while (x != *root && x->color == false) {
+//         if (x == x->parent->left) {
+//             struct node* w = x->parent->right;
+//             if (w->color == true) {
+//                 w->color = false;
+//                 x->parent->color = true;
+//                 LEFT_ROTATE(root, x->parent);
+//                 w = x->parent->right;
+//             }
+//             if (w->left->color == false && w->right->color == false) {
+//                 w->color = true;
+//                 x = x->parent;
+//             } else {
+//                 if (w->right->color == false) {
+//                     w->left->color = false;
+//                     w->color = true;
+//                     RIGHT_ROTATE(root, w);
+//                     w = x->parent->right;
+//                 }
+//                 w->color = x->parent->color;
+//                 x->parent->color = false;
+//                 w->right->color = false;
+//                 LEFT_ROTATE(root, x->parent);
+//                 x = *root;
+//             }
+//         } else {
+//             struct node* w = x->parent->left;
+//             if (w->color == true) {
+//                 w->color = false;
+//                 x->parent->color = true;
+//                 RIGHT_ROTATE(root, x->parent);
+//                 w = x->parent->left;
+//             }
+//             if (w->right->color == false && w->left->color == false) {
+//                 w->color = true;
+//                 x = x->parent;
+//             } else {
+//                 if (w->left->color == false) {
+//                     w->right->color = false;
+//                     w->color = true;
+//                     LEFT_ROTATE(root, w);
+//                     w = x->parent->left;
+//                 }
+//                 w->color = x->parent->color;
+//                 x->parent->color = false;
+//                 w->left->color = false;
+//                 RIGHT_ROTATE(root, x->parent);
+//                 x = *root;
+//             }
+//         }
+//     }
+//     x->color = false;
+// };
