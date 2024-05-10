@@ -38,7 +38,67 @@ void RBRemoveFixUp(TREE** adrs, TREE* tree);
 
 int main(void)
 {
+
     TREE* tree = NULL;
+    tree = createNewTree(26); // default is black
+    tree->root = NULL;
+    
+    // LINE 1
+    tree->left = createNewTree(17);
+    tree->left->red = '1'; // Assigning red
+    tree->left->root = tree;
+    tree->right = createNewTree(41);
+    tree->right->root = tree;
+
+    // LINE 2
+    tree->left->left = createNewTree(14);
+    tree->left->left->root = tree->left;
+    tree->left->right = createNewTree(21);
+    tree->left->right->root = tree->left;
+    tree->right->left = createNewTree(30);
+    tree->right->left->red = '1'; // Assigning red
+    tree->right->left->root = tree->right;
+    tree->right->right = createNewTree(47);
+    tree->right->right->root = tree->right;
+
+    // LINE 3
+    tree->left->left->left = createNewTree(10);
+    tree->left->left->left->red = '1'; // Assigning red
+    tree->left->left->left->root = tree->left->left;
+    tree->left->left->right = createNewTree(16);
+    tree->left->left->right->root = tree->left->left;
+    tree->left->right->left = createNewTree(19);
+    tree->left->right->left->root = tree->left->right;
+    tree->left->right->right = createNewTree(23);
+    tree->left->right->right->root = tree->left->right;
+    tree->right->left->left = createNewTree(28);
+    tree->right->left->left->root = tree->right->left;
+    tree->right->left->right = createNewTree(38);
+    tree->right->left->right->root = tree->right->left;
+
+    // LINE 4
+    tree->left->left->left->left = createNewTree(7);
+    tree->left->left->left->left->root = tree->left->left->left;
+    tree->left->left->left->right = createNewTree(12);
+    tree->left->left->left->right->root = tree->left->left->left;
+    tree->left->left->right->left = createNewTree(15);
+    tree->left->left->right->left->red = '1'; // Assigning red
+    tree->left->left->right->left->root = tree->left->left->right;
+    tree->left->right->left->right = createNewTree(20);
+    tree->left->right->left->right->red = '1'; // Assigning red
+    tree->left->right->left->right->root = tree->left->right->left;
+    tree->right->left->right->left = createNewTree(35);
+    tree->right->left->right->left->red = '1'; // Assigning red
+    tree->right->left->right->left->root = tree->right->left->right;
+    tree->right->left->right->right = createNewTree(39);
+    tree->right->left->right->right->red = '1'; // Assigning red
+    tree->right->left->right->right->root = tree->right->left->right;
+
+    // LINE 5
+    tree->left->left->left->left->left = createNewTree(3);
+    tree->left->left->left->left->left->red = '1'; // Assigning red
+    tree->left->left->left->left->left->root = tree->left->left->left->left;
+
     int op = -1, id = 0;
     while (op != 0)
     {
@@ -75,6 +135,9 @@ int main(void)
                 printf("value to be removed:\n");
                 scanf("%i", &id);
                 removeOnRBTreeByid(&tree, id);
+            }else if (op == 8)
+            {
+                printRBTree(tree, 3);
             }else if (op == 0)
             {
                 printf("exiting...\n");
@@ -271,6 +334,7 @@ int transplantTree(TREE** adrs, TREE* root, TREE* tree)
     {
         root->root = tree->root;
     }
+    return 1;
 };
 
 TREE* searchOnTree(TREE* root, int id)
@@ -316,82 +380,34 @@ int removeOnRBTreeByid(TREE** root, int id)
 
 int removeOnRBTree(TREE** root, TREE* tree, TREE* tree_root)
 {
-    // if (NULL != tree)
-    // {
-    //     TREE* auxx = tree;
-    //     char color = tree->red;
-    //     if (NULL != tree_root)
-    //     {
-    //         if (NULL == tree->left)
-    //         {
-    //             auxx = tree->right;
-    //         }else if (NULL == tree->right)
-    //         {
-    //             auxx = tree->left;
-    //         }
-    //         if (tree_root->left == tree)
-    //         {
-    //             if (NULL != tree->right)
-    //             {
-    //                 tree_root->left = tree->right;
-    //                 if (NULL != tree->left)
-    //                 {
-    //                     transplantTree(tree->right, tree->left);
-    //                 }
-    //             }else if(NULL != tree->left)
-    //             {
-    //                 tree_root->left = tree->left;
-    //             }else
-    //             {
-    //                 tree_root->left = NULL;
-    //             }
-    //             tree->id = 0;
-    //             free(tree);
-    //         }else if (tree_root->right == tree)
-    //         {
-    //             if (NULL != tree->right)
-    //             {
-    //                 tree_root->right = tree->right;
-    //                 if (NULL != tree->left)
-    //                 {
-    //                     auxx = tree->right;
-    //                     transplantTree(tree->right, tree->left);
-    //                 }
-    //             }else if(NULL != tree->left)
-    //             {
-    //                 tree_root->right = tree->left;
-    //             }else
-    //             {
-    //                 tree_root->right = NULL;
-    //             }
-    //             tree->id = 0;
-    //             free(tree);
-    //         }
-    //     }else
-    //     {
-    //         if (*root == tree)
-    //         {
-    //             if (NULL != tree->right)
-    //             {
-    //             *root = tree->right;
-    //             if (NULL != tree->left)
-    //             {
-    //                 transplantTree(tree->right, tree->left);
-    //             }
-    //             }else if(NULL != tree->left)
-    //             {
-    //                 *root = tree->left;
-    //             }
-    //             tree->id = 0;
-    //             free(tree);
-    //         }
-    //     }
-    //     // if (y_original_color == false) {
-    //     //     RB_DELETE_FIXUP(root, x);
-    //     // }
-    //     return 1;
-    // }
-
+    TREE* aux = tree;
+    TREE* auxx;
+    char aux_original_color = aux->red;
+    if (tree->left == NULL) {
+        auxx = tree->right;
+        transplantTree(root, tree, tree->right);
+    } else if (tree->right == NULL) {
+        auxx = tree->left;
+        transplantTree(root, tree, tree->left);
+    } else {
+        aux = minTree(tree->right);
+        aux_original_color = aux->red;
+        auxx = aux->right;
+        if (aux->root == tree) {
+            auxx->root = aux;
+        } else {
+            transplantTree(root, aux, aux->right);
+            aux->right = tree->right;
+            aux->right->root = aux;
+        }
+        transplantTree(root, tree, aux);
+        aux->left = tree->left;
+        aux->left->root = aux;
+        aux->red = tree->red;
+    }
+    if (aux_original_color == '0') {
+        RBRemoveFixUp(root, auxx);
+    }
 };
 
 int printInOrderTree(TREE* root)
@@ -593,58 +609,81 @@ void RBInsertFixUp(TREE** adrs, TREE* tree)
     }
 };
 
-// void RBRemoveFixUp(TREE** adrs, TREE* tree)
-// {
-//     while (x != *root && x->color == false) {
-//         if (x == x->parent->left) {
-//             struct node* w = x->parent->right;
-//             if (w->color == true) {
-//                 w->color = false;
-//                 x->parent->color = true;
-//                 LEFT_ROTATE(root, x->parent);
-//                 w = x->parent->right;
-//             }
-//             if (w->left->color == false && w->right->color == false) {
-//                 w->color = true;
-//                 x = x->parent;
-//             } else {
-//                 if (w->right->color == false) {
-//                     w->left->color = false;
-//                     w->color = true;
-//                     RIGHT_ROTATE(root, w);
-//                     w = x->parent->right;
-//                 }
-//                 w->color = x->parent->color;
-//                 x->parent->color = false;
-//                 w->right->color = false;
-//                 LEFT_ROTATE(root, x->parent);
-//                 x = *root;
-//             }
-//         } else {
-//             struct node* w = x->parent->left;
-//             if (w->color == true) {
-//                 w->color = false;
-//                 x->parent->color = true;
-//                 RIGHT_ROTATE(root, x->parent);
-//                 w = x->parent->left;
-//             }
-//             if (w->right->color == false && w->left->color == false) {
-//                 w->color = true;
-//                 x = x->parent;
-//             } else {
-//                 if (w->left->color == false) {
-//                     w->right->color = false;
-//                     w->color = true;
-//                     LEFT_ROTATE(root, w);
-//                     w = x->parent->left;
-//                 }
-//                 w->color = x->parent->color;
-//                 x->parent->color = false;
-//                 w->left->color = false;
-//                 RIGHT_ROTATE(root, x->parent);
-//                 x = *root;
-//             }
-//         }
-//     }
-//     x->color = false;
-// };
+void RBRemoveFixUp(TREE** adrs, TREE* tree)
+{
+  while (tree != *adrs && tree->red == '0') 
+    {
+        //is left
+        if (tree == tree->root->left) 
+        {
+            TREE* aux = tree->root->right;
+            //rotate left
+            if (aux->red == '1')
+            {
+                aux->red = '0';
+                tree->root->red = '0';
+                leftRotate(adrs, tree->root);
+                aux = tree->root->right;
+            }
+            //if sons black, become red
+            if (aux->left->red == '0' && aux->right->red == '0') 
+            {
+                aux->red = '1';
+                tree = tree->root;
+            //sons not black
+            } else 
+            {
+                //rotate right
+                if (aux->right->red == '0') 
+                {
+                    aux->left->red = '0';
+                    aux->red = '1';
+                    rightRotate(adrs, aux);
+                    aux = tree->root->right;
+                }
+                //rotate left
+                aux->red = tree->root->red;
+                tree->root->red = '0';
+                aux->right->red = '0';
+                leftRotate(adrs, tree->root);
+                tree = *adrs;
+            }
+        //is right
+        } else 
+        {
+            TREE* aux = tree->root->left;
+            //rotate right
+            if (aux->red == '1') 
+            {
+                aux->red = '0';
+                tree->root->red = '1';
+                rightRotate(adrs, tree->root);
+                aux = tree->root->left;
+            }
+            //if sons black, become red
+            if (aux->right->red == '0' && aux->left->red == '0') 
+            {
+                aux->red = '1';
+                tree = tree->root;
+            //sons not black
+            } else 
+            {
+                //rotate left
+                if (aux->left->red == '0') 
+                {
+                    aux->right->red = '0';
+                    aux->red = '1';
+                    leftRotate(adrs, aux);
+                    aux = tree->root->left;
+                }
+                //rotate right
+                aux->red = tree->root->red;
+                tree->root->red = '0';
+                aux->left->red = '0';
+                rightRotate(adrs, tree->root);
+                tree = *adrs;
+            }
+        }
+    }
+    tree->red = '0';
+};
