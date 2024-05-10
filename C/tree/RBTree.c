@@ -28,8 +28,8 @@ int printPreOrderTree(TREE* root);
 int printPostOrderTree(TREE* root);
 TREE* maxTree(TREE* tree);
 TREE* minTree(TREE* tree);
-int rightRotate(TREE** adrs, TREE* tree);
-int leftRotate(TREE** adrs, TREE* tree);
+void rightRotate(TREE** adrs, TREE* tree);
+void leftRotate(TREE** adrs, TREE* tree);
 void printRBTree(TREE* tree, int level);
 void RBInsertFixUp(TREE** adrs, TREE* tree);
 void RBRemoveFixUp(TREE** adrs, TREE* tree);
@@ -104,7 +104,7 @@ int main(void)
     {
         if (NULL != tree)
         {
-            printf("-------------------------------\n 1 insert \n 2 print in order \n 3 print post order \n 4 print pre order \n 5 max id \n 6 mim id \n 7 remove \n 0 exit \n-------------------------------\n");
+            printf("\n-------------------------------\n 1 insert \n 2 print in order \n 3 print post order \n 4 print pre order \n 5 max id \n 6 mim id \n 7 remove \n 8 print RB tree \n 0 exit \n-------------------------------\n");
             scanf("%i", &op);
             if (op == 1)
             {
@@ -330,7 +330,7 @@ int transplantTree(TREE** adrs, TREE* root, TREE* tree)
     {
         root->root->right = tree;
     }
-    if (root != NULL) 
+    if (NULL != root && NULL != tree) 
     {
         root->root = tree->root;
     }
@@ -383,19 +383,26 @@ int removeOnRBTree(TREE** root, TREE* tree, TREE* tree_root)
     TREE* aux = tree;
     TREE* auxx;
     char aux_original_color = aux->red;
-    if (tree->left == NULL) {
+    if (NULL == tree->left) {
+        //transplant and set auxx
         auxx = tree->right;
         transplantTree(root, tree, tree->right);
-    } else if (tree->right == NULL) {
+    } else if (NULL == tree->right) 
+    {
+        //transplant and set auxx
         auxx = tree->left;
         transplantTree(root, tree, tree->left);
-    } else {
+    } else 
+    {
+        //transplant all
         aux = minTree(tree->right);
         aux_original_color = aux->red;
         auxx = aux->right;
-        if (aux->root == tree) {
+        if (aux->root == tree) 
+        {
             auxx->root = aux;
-        } else {
+        } else 
+        {
             transplantTree(root, aux, aux->right);
             aux->right = tree->right;
             aux->right->root = aux;
@@ -405,7 +412,8 @@ int removeOnRBTree(TREE** root, TREE* tree, TREE* tree_root)
         aux->left->root = aux;
         aux->red = tree->red;
     }
-    if (aux_original_color == '0') {
+    if (aux_original_color == '0') 
+    {
         RBRemoveFixUp(root, auxx);
     }
 };
@@ -465,7 +473,7 @@ TREE* minTree(TREE* tree)
     }
 };
 
-int rightRotate(TREE** adrs, TREE* tree)
+void rightRotate(TREE** adrs, TREE* tree)
 {
     //aux = left
     TREE* aux = tree->left;
@@ -493,7 +501,7 @@ int rightRotate(TREE** adrs, TREE* tree)
     tree->root = aux;    
 };
 
-int leftRotate(TREE** adrs, TREE* tree)
+void leftRotate(TREE** adrs, TREE* tree)
 {
     TREE* aux = tree->right;
     tree->right = aux->left;
@@ -548,7 +556,7 @@ void RBInsertFixUp(TREE** adrs, TREE* tree)
         if (NULL != tree->root)
         {
             //while root = red
-            while (1 == tree->root->red)
+            while ('1' == tree->root->red)
             {
                 //if tree root is on left
                 if (tree->root == tree->root->root->left)
@@ -556,12 +564,12 @@ void RBInsertFixUp(TREE** adrs, TREE* tree)
                     //the other side of the tree
                     TREE* aux = tree->root->root->right;
                     //if the other side is not null and red
-                    if (NULL != aux && 1 == aux->red)
+                    if (NULL != aux && '1' == aux->red)
                     {
                         //fix
-                        tree->root->red = 0;
-                        aux->red = 0;
-                        tree->root->root->red = 1;
+                        tree->root->red = '0';
+                        aux->red = '0';
+                        tree->root->root->red = '1';
                         tree = tree->root->root;
                     //if the other side are NULL or black (is the same )
                     }else
@@ -573,8 +581,8 @@ void RBInsertFixUp(TREE** adrs, TREE* tree)
                             leftRotate(adrs, tree);
                         }
                         //dont know why
-                        tree->root->red = 0;
-                        tree->root->root->red = 1;
+                        tree->root->red = '0';
+                        tree->root->root->red = '1';
                         rightRotate(adrs, tree->root->root);
                     }
                 //tree root is on right
@@ -582,12 +590,12 @@ void RBInsertFixUp(TREE** adrs, TREE* tree)
                 {
                     TREE* aux = tree->root->root->left;
                     //if the other side is not null and red
-                    if (NULL != aux && 1 == aux->red) 
+                    if (NULL != aux && '1' == aux->red) 
                     {
                         //fix
-                        tree->root->red = 0;
-                        aux->red = 0;
-                        tree->root->root->red = 1;
+                        tree->root->red = '0';
+                        aux->red = '0';
+                        tree->root->root->red = '1';
                         tree = tree->root->root;
                     //if the other side are NULL or black (is the same )
                     } else 
@@ -599,8 +607,8 @@ void RBInsertFixUp(TREE** adrs, TREE* tree)
                             rightRotate(adrs, tree);
                         }
                         //dont know why
-                        tree->root->red = 0;
-                        tree->root->root->red = 1;
+                        tree->root->red = '0';
+                        tree->root->root->red = '1';
                         leftRotate(adrs, tree->root->root);
                     }
                 }
