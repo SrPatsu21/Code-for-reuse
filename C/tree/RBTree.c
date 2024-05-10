@@ -137,7 +137,7 @@ int main(void)
                 removeOnRBTreeByid(&tree, id);
             }else if (op == 8)
             {
-                printRBTree(tree, 3);
+                printRBTree(tree, 0);
             }else if (op == 0)
             {
                 printf("exiting...\n");
@@ -380,42 +380,50 @@ int removeOnRBTreeByid(TREE** root, int id)
 
 int removeOnRBTree(TREE** root, TREE* tree, TREE* tree_root)
 {
-    TREE* aux = tree;
-    TREE* auxx;
-    char aux_original_color = aux->red;
-    if (NULL == tree->left) {
-        //transplant and set auxx
-        auxx = tree->right;
-        transplantTree(root, tree, tree->right);
-    } else if (NULL == tree->right) 
-    {
-        //transplant and set auxx
-        auxx = tree->left;
-        transplantTree(root, tree, tree->left);
-    } else 
-    {
-        //transplant all
-        aux = minTree(tree->right);
-        aux_original_color = aux->red;
-        auxx = aux->right;
-        if (aux->root == tree) 
+    if (tree != NULL)
+    {    
+        TREE* aux = tree;
+        TREE* auxx;
+        char aux_original_color = aux->red;
+        if (NULL == tree->left) {
+            //transplant and set auxx
+            auxx = tree->right;
+            transplantTree(root, tree, tree->right);
+            free(tree);
+        } else if (NULL == tree->right) 
         {
-            auxx->root = aux;
+            //transplant and set auxx
+            auxx = tree->left;
+            transplantTree(root, tree, tree->left);
+            free(tree);
         } else 
         {
-            transplantTree(root, aux, aux->right);
-            aux->right = tree->right;
-            aux->right->root = aux;
+            //transplant all
+            aux = minTree(tree->right);
+            aux_original_color = aux->red;
+            auxx = aux->right;
+            if (aux->root == tree) 
+            {
+                auxx->root = aux;
+            } else 
+            {
+                transplantTree(root, aux, aux->right);
+                aux->right = tree->right;
+                aux->right->root = aux;
+            }
+            transplantTree(root, tree, aux);
+            aux->left = tree->left;
+            aux->left->root = aux;
+            aux->red = tree->red;
+            free(tree);
         }
-        transplantTree(root, tree, aux);
-        aux->left = tree->left;
-        aux->left->root = aux;
-        aux->red = tree->red;
+        if (aux_original_color == '0') 
+        {
+            RBRemoveFixUp(root, auxx);
+        }
+        return 1;
     }
-    if (aux_original_color == '0') 
-    {
-        RBRemoveFixUp(root, auxx);
-    }
+    return 0;
 };
 
 int printInOrderTree(TREE* root)
@@ -523,10 +531,10 @@ void leftRotate(TREE** adrs, TREE* tree)
 // Function to print a Red-Black tree
 void printRBTree(TREE* tree, int level)
 {
-    if (tree == NULL) {
+    if (tree == NULL)
+    {
         return;
     }
-
     // Increase distance between levels
     level += 10;
 
@@ -619,7 +627,7 @@ void RBInsertFixUp(TREE** adrs, TREE* tree)
 
 void RBRemoveFixUp(TREE** adrs, TREE* tree)
 {
-  while (tree != *adrs && tree->red == '0') 
+    while (tree != *adrs && '0' == tree->red) 
     {
         //is left
         if (tree == tree->root->left) 
