@@ -588,7 +588,6 @@ void RBInsertFixUp(TREE** adrs, TREE* tree)
                             tree = tree->root;
                             leftRotate(adrs, tree);
                         }
-                        //dont know why
                         tree->root->red = '0';
                         tree->root->root->red = '1';
                         rightRotate(adrs, tree->root->root);
