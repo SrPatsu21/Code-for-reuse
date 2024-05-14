@@ -1,14 +1,23 @@
 #include "Tree.h"
 
-FILE* openfile();
+FILE* openFile();
 
 
 
-FILE* openfile()
+FILE* openFile()
 {
     FILE* fptr;
  
-    fptr = fopen("file.txt", "r");
+    fptr = fopen("text.txt", "r");
+ 
+    return fptr;
+}
+
+FILE* writeFile()
+{
+    FILE* fptr;
+ 
+    fptr = fopen("compacted.txt", "w");
  
     return fptr;
 }
