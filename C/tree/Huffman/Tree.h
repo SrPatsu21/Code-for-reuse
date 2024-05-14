@@ -1,3 +1,7 @@
+#ifndef NULL
+#define NULL 0
+#endif
+
 #ifndef TREEHUFFMAN_H
 #define TREEHUFFMAN_H
 
@@ -10,27 +14,19 @@ typedef struct Tree
     struct Tree* right;
     struct Tree* left;
     char varchar;
+    int priority;
 }TREE;
 
-TREE* createNewTree(int id);
+TREE* createNewTree(char varchar, int priority);
 void freeTree(TREE* root);
-TREE* findParent(TREE* root, TREE* tree);
-int insertOnRightSizeTree(TREE* root, int id);
-int insertOnLeftSizeTree(TREE* root, int id);
-int insertOnTree(TREE* root, int id);
-int transplantTree(TREE* root, TREE* tree);
-int reInplantTree(TREE* main_root, TREE* root, TREE* tree);
-TREE* searchOnTree(TREE* root, int id);
-TREE* searchLinearOnTree(TREE* root, int id);
-int removeOnTree(TREE** root, TREE* tree, TREE* tree_root);
-int removeOnTreeByid(TREE** root, int id);
+int insertOnTree(TREE* root, TREE* newtree1, TREE* newtree2);
+TREE* searchOnTree(TREE* root, char* c, int* i);
 int printInOrderTree(TREE* root);
 int printPreOrderTree(TREE* root);
 int printPostOrderTree(TREE* root);
-TREE* maxTree(TREE* tree);
 TREE* minTree(TREE* tree);
 
-TREE* createNewTree(char varchar)
+TREE* createNewTree(char varchar, int priority)
 {
     TREE* tree;
     tree = (struct Tree*) malloc(sizeof(TREE));
@@ -39,6 +35,7 @@ TREE* createNewTree(char varchar)
         tree->left = NULL;
         tree->right = NULL;
         tree->varchar = varchar;
+        tree->priority = priority;
     }
     return tree;
 };
@@ -53,49 +50,36 @@ void freeTree(TREE* root)
     }
 };
 
-//dont know how to do
-int insertOnTree(TREE* root, int id)
+int insertOnTree(TREE* root, TREE* tree1, TREE* tree2)
 {
     if (root != NULL)
-    {   
-        if (id > root->id)
+    {
+        if (tree1->priority > tree2->priority)
         {
-            if (NULL != root->right)
-            {
-                insertOnTree(root->right, id);
-            }else
-            {
-                insertOnRightSizeTree(root, id);
-            }
-        }else if(id < root->id)
-        {
-            if (NULL != root->left)
-            {
-                insertOnTree(root->left, id);
-            }else
-            {
-                insertOnLeftSizeTree(root, id);
-            }
+            root->left = tree2;
+            root->right = tree1;
         }else
         {
-            return 0;
+            root->left = tree1;
+            root->right = tree2;
         }
+        root->priority = (tree1->priority + tree2->priority);
     }else
     {
-        printf("null root\n");
+        printf("\nnull root\n");
         return 0;
     }
     return 1;
 };
 
-TREE* searchOnTree(TREE* root, char** c, int* i)
+TREE* searchOnTree(TREE* root, char* c, int* i)
 {
     if(NULL == root->left & NULL == root->right)
     {
         return root;
     }else
     {        
-        if (*c[*i] == '1')
+        if (c[*i] == '1')
         {
             *i+1;
             return searchOnTree(root->right, c, i);
