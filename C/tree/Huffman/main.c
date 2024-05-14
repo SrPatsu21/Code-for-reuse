@@ -1,10 +1,10 @@
 #include "Tree.h"
 
-int openfile();
+FILE* openfile();
 
 
 
-int openfile()
+FILE* openfile()
 {
     FILE* fptr;
  
