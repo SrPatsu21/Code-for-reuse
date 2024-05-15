@@ -75,9 +75,6 @@ void printTree(TREE* tree, int level)
     {
         printf("(%i \\n)", tree->priority);
     }
-    
-    
-
     printTree(tree->left, level);
 };
 
@@ -91,7 +88,6 @@ void setCodifyTable(char table[ASCII_SIZE][(ASCII_SIZE/2)], TREE* tree, int i, c
             {
                 table[((int) tree->varchar)][j] = c[j];
             }
-            printf("\n");
         }else
         {
             i++;
@@ -149,19 +145,18 @@ void printArray(char c[ASCII_SIZE][(ASCII_SIZE/2)], int h, int l)
 
 void writeOnFile(FILE* f2read, FILE* f2write, char table[ASCII_SIZE][(ASCII_SIZE/2)])
 {
-    int i = 0;
-    int bool1 = 93;
+    int bool1 = 1;
     int bool0 = 0;
     while (!feof(f2read))
     {
         char c = fgetc(f2read);
-        char* input = table[c];
+        char* input = table[((int)c)];
         for (int j = 0; '\0' != input[j]; j++)
         {
             if ('1' == input[j])
             {
                 fwrite(&bool1, 1, 1, f2write);
-            }else
+            }else if ('0' == input[j])
             {
                 fwrite(&bool0, 1, 1, f2write);
             }
@@ -171,13 +166,35 @@ void writeOnFile(FILE* f2read, FILE* f2write, char table[ASCII_SIZE][(ASCII_SIZE
 
 void unzipFile(FILE* fzip, FILE* funzip, TREE* tree)
 {
+    int r = 0;
+    TREE* aux = tree;
+    while (!feof(fzip))
+    {
+        fread(&r, 1, 1, fzip);
+        if (NULL != aux)
+        {
+            if (r)
+            {
+                aux = aux->right;
+            }else
+            {
+                aux = aux->left;
+            }
+        }
 
+        if (aux->left == NULL || aux->right == NULL)
+        {
+            fputc(aux->varchar, funzip);
+            aux = tree;
+        }
+        
+    }
 };
 
 int main(void)
 {
-    FILE* f2read = fopen("./text.txt", "r");
-    FILE* f2write = fopen("./compacted.txt", "wb");
+    FILE* f2read = fopen("./files/1text.txt", "r");
+    FILE* f2write = fopen("./files/2compacted.txt", "wb");
     int* priority = setPriorityArray(f2read);
     LIST* list = createListOfPriority(priority);
     TREE* tree = createTreeBasedOnPriority(list);
@@ -204,13 +221,14 @@ int main(void)
     /*
     * unzip
     */
-    FILE* funzip = fopen("./unzip.txt", "w");
-    f2write = fopen("./compacted.txt", "rb");
+    FILE* funzip = fopen("./files/3unzip.txt", "w");
+    f2write = fopen("./files/2compacted.txt", "rb");
     unzipFile(f2write, funzip, tree);
     /*
     *   close file
     */ 
     fclose(f2write);
+    fclose(funzip);
     /*
     *   free tree and list
     */
