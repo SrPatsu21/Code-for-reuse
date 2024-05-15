@@ -73,6 +73,27 @@ void printTree(TREE* tree, int level)
     printTree(tree->left, level);
 };
 
+void setCodifyTable(char table[ASCII_SIZE][(ASCII_SIZE/2)], TREE* tree, int i, char c[(ASCII_SIZE/2)])
+{
+    if (tree != NULL)
+    {
+        if (tree->right == NULL && tree->left == NULL)
+        {
+            for (int j = 0; j < (ASCII_SIZE/2); j++)
+            {
+                table[((int) tree->varchar)][j] = c[j];
+            }
+        }else
+        {
+            i++;
+            c[i] = 0;
+            setCodifyTable(table, tree->left, i, c);
+            c[i] = 1;
+            setCodifyTable(table, tree->right, i, c);
+        }
+    }
+};
+
 int main(void)
 {
     FILE* fread = fopen("./text.txt", "r");
@@ -80,6 +101,12 @@ int main(void)
     LIST* list = createListOfPriority(priority);
     TREE* tree = createTreeBasedOnPriority(list);
     printTree(tree, 0);
+    //set all as \0
+    char table[ASCII_SIZE][(ASCII_SIZE/2)];
+    //set all as \0
+    char c[(ASCII_SIZE/2)];
+
+    setCodifyTable(table, tree, -1, c);
     
     fclose(fread);
 }
