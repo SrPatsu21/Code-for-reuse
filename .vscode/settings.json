@@ -50,6 +50,7 @@
         "typeinfo": "cpp",
         "list": "cpp",
         "optional": "cpp",
-        "ctime": "cpp"
+        "ctime": "cpp",
+        "list.h": "c"
     }
 }

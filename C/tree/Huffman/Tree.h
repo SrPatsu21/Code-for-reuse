@@ -7,7 +7,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#define NULL 0 //((void *)0)
 
 typedef struct Tree
 {
