@@ -147,10 +147,33 @@ void printArray(char c[ASCII_SIZE][(ASCII_SIZE/2)], int h, int l)
     printf("\n");
 };
 
+void writeOnFile(FILE* f2read, FILE* f2write, char table[ASCII_SIZE][(ASCII_SIZE/2)])
+{
+    int i = 0;
+    int bool1 = 1;
+    int bool0 = 0;
+    while (!feof(f2read))
+    {
+        char c = fgetc(f2read);
+        char input[] = table[c];
+        for (int j = 0; '\0' != input[j]; j++)
+        {
+            if ('1' == input[j])
+            {
+                fwrite(&bool1, 1, 1, f2write);
+            }else
+            {
+                fwrite(&bool0, 1, 1, f2write);
+            }
+        }
+    }
+}
+
 int main(void)
 {
-    FILE* fread = fopen("./text.txt", "r");
-    int* priority = setPriorityArray(fread);
+    FILE* f2read = fopen("./text.txt", "r");
+    FILE* f2write = fopen("./compacted.txt", "wb");
+    int* priority = setPriorityArray(f2read);
     LIST* list = createListOfPriority(priority);
     TREE* tree = createTreeBasedOnPriority(list);
     printTree(tree, 0);
@@ -163,6 +186,10 @@ int main(void)
     setCodifyTable(table, tree, -1, c);
     printArray(table, ASCII_SIZE, (ASCII_SIZE/2));
 
+    /*
+    * write file
+    */
+    writeOnFile(f2read, f2write, table);
     /*
     *   close file
     */ 
