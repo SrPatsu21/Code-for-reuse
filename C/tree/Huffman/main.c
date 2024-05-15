@@ -150,12 +150,12 @@ void printArray(char c[ASCII_SIZE][(ASCII_SIZE/2)], int h, int l)
 void writeOnFile(FILE* f2read, FILE* f2write, char table[ASCII_SIZE][(ASCII_SIZE/2)])
 {
     int i = 0;
-    int bool1 = 1;
+    int bool1 = 93;
     int bool0 = 0;
     while (!feof(f2read))
     {
         char c = fgetc(f2read);
-        char input[] = table[c];
+        char* input = table[c];
         for (int j = 0; '\0' != input[j]; j++)
         {
             if ('1' == input[j])
@@ -169,6 +169,11 @@ void writeOnFile(FILE* f2read, FILE* f2write, char table[ASCII_SIZE][(ASCII_SIZE
     }
 }
 
+void unzipFile(FILE* fzip, FILE* funzip, TREE* tree)
+{
+
+};
+
 int main(void)
 {
     FILE* f2read = fopen("./text.txt", "r");
@@ -176,7 +181,7 @@ int main(void)
     int* priority = setPriorityArray(f2read);
     LIST* list = createListOfPriority(priority);
     TREE* tree = createTreeBasedOnPriority(list);
-    printTree(tree, 0);
+    // printTree(tree, 0);
 
     char table[ASCII_SIZE][(ASCII_SIZE/2)];
     nullArrayChar(table, ASCII_SIZE, (ASCII_SIZE/2));
@@ -184,16 +189,28 @@ int main(void)
     nullVetChar(c, (ASCII_SIZE/2));
 
     setCodifyTable(table, tree, -1, c);
-    printArray(table, ASCII_SIZE, (ASCII_SIZE/2));
+    // printArray(table, ASCII_SIZE, (ASCII_SIZE/2));
 
     /*
     * write file
     */
+    rewind(f2read);
     writeOnFile(f2read, f2write, table);
     /*
     *   close file
     */ 
-    fclose(fread);
+    fclose(f2read);
+    fclose(f2write);
+    /*
+    * unzip
+    */
+    FILE* funzip = fopen("./unzip.txt", "w");
+    f2write = fopen("./compacted.txt", "rb");
+    unzipFile(f2write, funzip, tree);
+    /*
+    *   close file
+    */ 
+    fclose(f2write);
     /*
     *   free tree and list
     */
