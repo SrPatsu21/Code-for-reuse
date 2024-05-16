@@ -6,6 +6,7 @@
 #include "Tree.h"
 
 #define ASCII_SIZE 256
+#define VOID_CHAR '\0'
 
 int* setPriorityArray(FILE* file)
 {
@@ -68,12 +69,16 @@ void printTree(TREE* tree, int level)
     for (int i = 10; i < level; i++) {
         printf(" ");
     }
-    if ('\n' != tree->varchar)
-    {
-        printf("(%i %c)", tree->priority, tree->varchar);
-    }else
+
+    if ('\n' == tree->varchar)
     {
         printf("(%i \\n)", tree->priority);
+    }else if (' ' == tree->varchar)
+    {
+        printf("(%i esp)", tree->priority);
+    }else
+    {
+        printf("(%i %c)", tree->priority, tree->varchar);
     }
     printTree(tree->left, level);
 };
@@ -103,7 +108,7 @@ void nullVetChar(char c[(ASCII_SIZE/2)], int size)
 {
     for (int i = 0; i < size; i++)
     {
-        c[i] = '\0';
+        c[i] = VOID_CHAR;
     }
     
 };
@@ -114,7 +119,7 @@ void nullArrayChar(char c[ASCII_SIZE][(ASCII_SIZE/2)], int h, int l)
     {    
         for (int i = 0; i < l; i++)
         {
-            c[j][i] = '\0';
+            c[j][i] = VOID_CHAR;
         }
     }
 };
@@ -143,58 +148,74 @@ void printArray(char c[ASCII_SIZE][(ASCII_SIZE/2)], int h, int l)
     printf("\n");
 };
 
-void writeOnFile(FILE* f2read, FILE* f2write, char table[ASCII_SIZE][(ASCII_SIZE/2)])
+void zipFile(FILE* f2read, FILE* f2write, char table[ASCII_SIZE][(ASCII_SIZE/2)])
 {
-    int bool1 = 1;
-    int bool0 = 0;
+    int char1 = 0;
+    int count = 0;
     while (!feof(f2read))
     {
-        char c = fgetc(f2read);
-        char* input = table[((int)c)];
-        for (int j = 0; '\0' != input[j]; j++)
+        char* input = table[((int)fgetc(f2read))];
+        for (int j = 0; VOID_CHAR != input[j]; j++)
         {
             if ('1' == input[j])
             {
-                fwrite(&bool1, 1, 1, f2write);
+                //shift
+                char1 <<= 1;
+                char1 += 1;
+                count++;
             }else if ('0' == input[j])
             {
-                fwrite(&bool0, 1, 1, f2write);
+                //shift
+                char1 <<= 1;
+                count++;
             }
+            if (8 == count)
+            {
+                char c = (char)char1;
+                fwrite(&c, 1, 1, f2write);
+                char1 = 0;
+                count = 0;
+            }
+            
         }
     }
 }
 
 void unzipFile(FILE* fzip, FILE* funzip, TREE* tree)
 {
-    int r = 0;
+    int helper = 0;
     TREE* aux = tree;
     while (!feof(fzip))
     {
-        fread(&r, 1, 1, fzip);
-        if (NULL != aux)
+        fread(&helper, 1, 1, fzip);
+        
+        for (size_t i = 0; i < 8; i++)
         {
-            if (r)
+            if (NULL != aux)
             {
-                aux = aux->right;
-            }else
+                if ((helper&1))
+                {
+                    aux = aux->right;
+                }else
+                {
+                    aux = aux->left;
+                }
+                helper = helper >> 1;
+            }
+
+            if (aux->left == NULL || aux->right == NULL)
             {
-                aux = aux->left;
+                fputc(aux->varchar, funzip);
+                aux = tree;
             }
         }
-
-        if (aux->left == NULL || aux->right == NULL)
-        {
-            fputc(aux->varchar, funzip);
-            aux = tree;
-        }
-        
     }
 };
 
 int main(void)
 {
     FILE* f2read = fopen("./files/1text.txt", "r");
-    FILE* f2write = fopen("./files/2compacted.txt", "wb");
+    FILE* f2write = fopen("./files/2compacted", "wb");
     int* priority = setPriorityArray(f2read);
     LIST* list = createListOfPriority(priority);
     TREE* tree = createTreeBasedOnPriority(list);
@@ -212,7 +233,8 @@ int main(void)
     * write file
     */
     rewind(f2read);
-    writeOnFile(f2read, f2write, table);
+    rewind(f2read);
+    zipFile(f2read, f2write, table);
     /*
     *   close file
     */ 
@@ -222,7 +244,9 @@ int main(void)
     * unzip
     */
     FILE* funzip = fopen("./files/3unzip.txt", "w");
-    f2write = fopen("./files/2compacted.txt", "rb");
+    f2write = fopen("./files/2compacted", "rb");
+    rewind(f2write);
+    rewind(funzip);
     unzipFile(f2write, funzip, tree);
     /*
     *   close file
