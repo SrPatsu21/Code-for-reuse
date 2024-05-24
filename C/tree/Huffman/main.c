@@ -157,105 +157,126 @@ void printArray(char c[ASCII_SIZE][(ASCII_SIZE/2)], int h, int l)
 
 void zipFile(FILE* f2read, FILE* f2write, char table[ASCII_SIZE][(ASCII_SIZE/2)])
 {
-    // int char1 = 0;
-    // int count = 0;
-    // while (!feof(f2read))
-    // {
-    //     char* input = table[((int)fgetc(f2read))];
-    //     for (int j = 0; VOID_CHAR != input[j]; j++)
-    //     {
-    //         if ('1' == input[j])
-    //         {
-    //             char1 += 1;
-    //         }
-    //         char1 = char1 << 1;
-    //         count++;
-    //         if (7 == count)
-    //         {
-    //             char c = (char)char1;
-    //             fwrite(&c, 1, 1, f2write);
-    //             char1 = 0;
-    //             count = 0;
-    //         }
+    int char1 = 0;
+    int count = 0;
+    char* input = table[((int)fgetc(f2read))];
+    while (!feof(f2read))
+    {
+        for (int j = 0; VOID_CHAR != input[j]; j++)
+        {
+            if ('1' == input[j])
+            {
+                printf("1");
+                char1 = char1 << 1;
+                char1 += 1;
+                count++;
+            }else if('0' == input[j])
+            {
+                printf("0");
+                char1 = char1 << 1;
+                count++;
+            }
+            if (8 == count)
+            {
+                char c = (char)char1;
+                fwrite(&c, 1, 1, f2write);
+                char1 = 0;
+                count = 0;
+            }
             
-    //     }
-    // }
-    // if (0 != count)
-    // {
-    //     char c = (char)char1;
-    //     fwrite(&c, 1, 1, f2write);
-    //     char1 = 0;
-    //     count = 0;
-    // }
+        }
+        input = table[((int)fgetc(f2read))];
+    }
+    if (0 != count)
+    {
+        for (size_t i = 0; count <= 8; i++)
+        {
+            char1 = char1 << 1;
+            count++;
+        }
+        char c = (char)char1;
+        fwrite(&c, 1, 1, f2write);
+        char1 = 0;
+        count = 0;
+    }
+    printf("\n");
 
     /*
     * by char
     */
-    while (!feof(f2read))
-    {
-        int i = ((int)fgetc(f2read));
-        if (i > 0)
-        {
-            for (int j = 0; VOID_CHAR != table[i][j]; j++)
-            {
-                if ('1' == table[i][j])
-                {
-                    fputc('1', f2write);
-                }else if ('0' == table[i][j])
-                {
-                    fputc('0', f2write);
-                }
-            }
-        }
-    }
+    // while (!feof(f2read))
+    // {
+    //     int i = ((int)fgetc(f2read));
+    //     if (i > 0)
+    //     {
+    //         for (int j = 0; VOID_CHAR != table[i][j]; j++)
+    //         {
+    //             if ('1' == table[i][j])
+    //             {
+    //                 fputc('1', f2write);
+    //             }else if ('0' == table[i][j])
+    //             {
+    //                 fputc('0', f2write);
+    //             }
+    //         }
+    //     }
+    // }
 }
 
 void unzipFile(FILE* fzip, FILE* funzip, TREE* tree)
 {
-    // int helper = 0;
-    // TREE* aux = tree;
-    // while (!feof(fzip))
-    // {  
-    //     fread(&helper, 1, 1, fzip);
-    //     for (size_t i = 0; i < 8; i++)
-    //     {
-    //         if (aux->left == NULL || aux->right == NULL)
-    //         {
-    //             fputc(aux->varchar, funzip);
-    //             aux = tree;
-    //         }
-    //         if (helper&256)
-    //         {
-    //             aux = aux->right;
-    //         }else
-    //         {
-    //             aux = aux->left;
-    //         }
-    //         helper = helper << 1;
-    //     }
-    // }
+    int helper = 0;
+    TREE* aux = tree;
+    fread(&helper, 1, 1, fzip);
+    while (!feof(fzip))
+    {  
+        helper = helper << 1;
+        for (size_t i = 0; i < 8; i++)
+        {
+
+            //101111011001011000000000010110100100100100010110011011011011110111001010111110111001010111111111
+            //10111101100101100000000001011010010010010001011001101101101111011100101011111011100101011111111
+            if (helper&256)
+            {
+                printf("1");
+                aux = aux->right;
+            }else
+            {
+                printf("0");
+                aux = aux->left;
+            }
+            helper = helper << 1;
+            if (aux->left == NULL || aux->right == NULL)
+            {
+                fputc(aux->varchar, funzip);
+                aux = tree;
+            }
+        }
+        fread(&helper, 1, 1, fzip);
+    }
+    printf("\n");
 
    /*
    * by char
    */
-    TREE* aux = tree;
-    char helper = '\0';
-    while (!feof(fzip))
-    {  
-        if (NULL == aux->left || NULL == aux->right)
-        {
-            fputc(aux->varchar, funzip);
-            aux = tree;
-        }
-        helper = fgetc(fzip);
-        if ('1' == helper)
-        {
-            aux = aux->right;
-        }else if ('0' == helper)
-        {
-            aux = aux->left;
-        }
-    }
+    // TREE* aux = tree;
+    // char helper = '\0';
+    // while (!feof(fzip))
+    // {  
+    //     if (NULL == aux->left || NULL == aux->right)
+    //     {
+    //         fputc(aux->varchar, funzip);
+    //         aux = tree;
+    //     }
+    //     helper = fgetc(fzip);
+    //     if ('1' == helper)
+    //     {
+    //         aux = aux->right;
+    //     }else if ('0' == helper)
+    //     {
+    //         aux = aux->left;
+    //     }
+    // }
 };
 
 int main(void)
