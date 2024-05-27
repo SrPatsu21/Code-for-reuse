@@ -20,6 +20,7 @@ int* setPriorityArray(FILE* file)
         char c = fgetc(file);
         priority[c]++;
     }
+    priority[0]++;
     return priority;
 };
 
@@ -187,17 +188,36 @@ void zipFile(FILE* f2read, FILE* f2write, char table[ASCII_SIZE][(ASCII_SIZE/2)]
         }
         input = table[((int)fgetc(f2read))];
     }
-    if (0 != count)
+
+    input = table[0];
+    int j = 0;
+    while (count != 0)
     {
-        for (size_t i = 0; count <= 8; i++)
+        if ('1' == input[j])
         {
+            printf("1");
+            char1 = char1 << 1;
+            char1 += 1;
+            count++;
+            j++;
+        }else if('0' == input[j])
+        {
+            printf("0");
             char1 = char1 << 1;
             count++;
+            j++;
         }
-        char c = (char)char1;
-        fwrite(&c, 1, 1, f2write);
-        char1 = 0;
-        count = 0;
+        if (VOID_CHAR == input[j])
+        {
+            j = 0;
+        }
+        if (8 == count)
+        {
+            char c = (char)char1;
+            fwrite(&c, 1, 1, f2write);
+            char1 = 0;
+            count = 0;
+        }
     }
     printf("\n");
 
