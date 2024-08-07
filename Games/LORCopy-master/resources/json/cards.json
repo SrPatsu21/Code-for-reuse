@@ -1,0 +1,93 @@
+[
+    {
+        "id": 0,
+        "type": 1,
+        "full_life": 3,
+        "life": 3,
+        "damage": 1,
+        "energy_cost": 1,
+        "description":"RICARDO\nMARCILIO"
+    },
+    {
+        "id": 1,
+        "type": 2,
+        "full_life": 3,
+        "life": 3,
+        "damage": 2,
+        "energy_cost": 3,
+        "description":"THIAGO\nBRAGA"
+    },
+    {
+        "id": 2,
+        "type": 2,
+        "full_life": 2,
+        "life": 2,
+        "damage": 2,
+        "energy_cost": 2,
+        "description":"FABIO\nPINHEIRO"
+    },
+    {
+        "id": 3,
+        "type": 2,
+        "full_life": 4,
+        "life": 4,
+        "damage": 4,
+        "energy_cost": 5,
+        "description":"DIEGO\nKROHL"
+    },
+    {
+        "id": 4,
+        "type": 2,
+        "full_life": 2,
+        "life": 2,
+        "damage": 2,
+        "energy_cost": 2,
+        "description":"RAFAEL\nZANIN"
+    },
+    {
+        "id": 5,
+        "type": 2,
+        "full_life": 1,
+        "life": 1,
+        "damage": 4,
+        "energy_cost": 2,
+        "description":"MANASSES\nRIBEIRO"
+    },
+    {
+        "id": 6,
+        "type": 2,
+        "full_life": 3,
+        "life": 3,
+        "damage": 2,
+        "energy_cost": 3,
+        "description":"GOIABA\nWONGT 07"
+    },
+    {
+        "id": 7,
+        "type": 2,
+        "full_life": 2,
+        "life": 2,
+        "damage": 1,
+        "energy_cost": 1,
+        "description":"DANI\nPRESTINI"
+    },
+    {
+        "id": 8,
+        "type": 2,
+        "full_life": 10,
+        "life": 10,
+        "damage": 6,
+        "energy_cost": 6,
+        "description":"PROJETO\nFINAL"
+    },
+    {
+        "id": 9,
+        "type": 2,
+        "full_life": 4,
+        "life": 4,
+        "damage": 6,
+        "energy_cost": 5,
+        "description":"GUSTAVO\nACORDANDO"
+    }
+]
+
