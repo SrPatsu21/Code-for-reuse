@@ -1,0 +1,39 @@
+group: BibliotecaBase
+
+Livro = {
+    idlivro, ideditora_fk, idautor_fk, preco, desconto, nome, descricao
+		1, 2, 3, 200, 10, 'livro_nome', 'descricao_livro'
+}
+Usuario = {
+    idusuario, email, senha, cpf, nome
+		1, 'email@', '123', '1234', 'nome_usuario'
+}
+Biblioteca = {
+    idbiblioteca, idusuario_fk, idlivro_fk, paginaslidas, periodo, valorcompra
+		1, 1, 1, 23, '10/12/2021', 200
+}
+Editora = {
+    ideditora, nome, descricao
+		1, 'nome_editora', descricao_editora
+}
+Autor = {
+		idautor, nome, descricao
+		1, 'autor-nome', 'descricao-autor'
+}
+
+Categorias = {
+    idcategorias, idlivro_fk, idcategoria_fk
+		1, 1, 1
+}
+Categoria = {
+    idcategoria, nome
+		1, 'nome-categoria'
+}
+Gerente = {
+    idgerent, idusuario_fk
+		1, 1
+}
+Alteracao = {
+    id, idusuario_fk, periodo, tabela, idtabelaalterada, motivo
+		1, 2, '10/13/2131', 'tabela a', 21, 'eu quis'
+}
