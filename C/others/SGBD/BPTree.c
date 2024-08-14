@@ -177,14 +177,14 @@ void insertKeyOnBPTree(BTree* btree, int key)
 
 // Function prototypes for helper functions used in
 // deleteKey
-void deleteKeyHelper(Node* node, int key);
-int findKey(Node* node, int key);
-void removeFromLeaf(Node* node, int idx);
-int getPredecessor(Node* node, int idx);
+void deleteKeyHelperBPTree(Node* node, int key);
+int findKeyBPTree(Node* node, int key);
+void removeFromLeafBPTree(Node* node, int idx);
+int getPredecessorBPTree(Node* node, int idx);
 void fill(Node* node, int idx);
-void borrowFromPrev(Node* node, int idx);
-void borrowFromNext(Node* node, int idx);
-void merge(Node* node, int idx);
+void borrowFromPrevBPTree(Node* node, int idx);
+void borrowFromNextBPTree(Node* node, int idx);
+void mergeBPTree(Node* node, int idx);
 
 // Function for deleting a key from the B+ tree
 void deleteKey(BTree* btree, int key)
@@ -192,36 +192,35 @@ void deleteKey(BTree* btree, int key)
     Node* root = btree->root;
 
     // Call a helper function to delete the key recursively
-    deleteKeyHelper(root, key);
+    deleteKeyHelperBPTree(root, key);
 
     // If root has no keys left and it has a child, make its
     // first child the new root
-    if (root->n == 0 && !root->leaf) {
+    if (root->key == 0 && !root->leaf)
+    {
         btree->root = root->children[0];
         free(root);
     }
 }
 
-// Helper function to recursively delete a key from the B+
-// tree
-void deleteKeyHelper(Node* node, int key)
+// Helper function to recursively delete a key from the B+ tree
+void deleteKeyHelperBPTree(Node* node, int key)
 {
-    int idx = findKey(
-        node, key); // Find the index of the key in the node
+    int idx = findKeyBPTree(node, key); // Find the index of the key in the node
 
     // If key is present in this node
-    if (idx < node->n && node->keys[idx] == key) {
+    if (idx < node->key && node->keys[idx] == key) {
         if (node->leaf) {
             // If the node is a leaf, simply remove the key
-            removeFromLeaf(node, idx);
+            removeFromLeafBPTree(node, idx);
         }
         else {
             // If the node is not a leaf, replace the key
             // with its predecessor/successor
-            int predecessor = getPredecessor(node, idx);
+            int predecessor = getPredecessorBPTree(node, idx);
             node->keys[idx] = predecessor;
             // Recursively delete the predecessor
-            deleteKeyHelper(node->children[idx],
+            deleteKeyHelperBPTree(node->children[idx],
                             predecessor);
         }
     }
@@ -230,16 +229,16 @@ void deleteKeyHelper(Node* node, int key)
         // the appropriate child
         if (node->leaf) {
             // Key not found in the tree
-            printf("Key %d not found in the B+ tree.\n",
-                   key);
+            printf("Key %d not found in the B+ tree.\n", key);
             return;
         }
 
-        bool isLastChild = (idx == node->n);
+        bool isLastChild = (idx == node->key);
 
         // If the child where the key is supposed to be lies
         // has less than t keys, fill that child
-        if (node->children[idx]->n < node->t) {
+        if (node->children[idx]->key < node->t)
+        {
             fill(node, idx);
         }
 
@@ -248,74 +247,76 @@ void deleteKeyHelper(Node* node, int key)
 
         // So, we need to recursively delete the key from
         // the previous child
-        if (isLastChild && idx > node->n) {
-            deleteKeyHelper(node->children[idx - 1], key);
+        if (isLastChild && idx > node->key) {
+            deleteKeyHelperBPTree(node->children[idx - 1], key);
         }
         else {
-            deleteKeyHelper(node->children[idx], key);
+            deleteKeyHelperBPTree(node->children[idx], key);
         }
     }
 }
 // Function to find the index of a key in a node
-int findKey(Node* node, int key)
+int findKeyBPTree(Node* node, int key)
 {
     int idx = 0;
-    while (idx < node->n && key > node->keys[idx]) {
+    while (idx < node->key && key > node->keys[idx]) 
+    {
         idx++;
     }
     return idx;
 }
 
 // Function to remove a key from a leaf node
-void removeFromLeaf(Node* node, int idx)
+void removeFromLeafBPTree(Node* node, int idx)
 {
-    for (int i = idx + 1; i < node->n; ++i) {
+    for (int i = idx + 1; i < node->key; ++i)
+    {
         node->keys[i - 1] = node->keys[i];
     }
-    node->n--;
+    node->key--;
 }
 
 // Function to get the predecessor of a key in a non-leaf
 // node
-int getPredecessor(Node* node, int idx)
+int getPredecessorBPTree(Node* node, int idx)
 {
     Node* curr = node->children[idx];
     while (!curr->leaf) {
-        curr = curr->children[curr->n];
+        curr = curr->children[curr->key];
     }
-    return curr->keys[curr->n - 1];
+    return curr->keys[curr->key - 1];
 }
 
 // Function to fill up the child node present at the idx-th
 // position in the node node
 void fill(Node* node, int idx)
 {
-    if (idx != 0 && node->children[idx - 1]->n >= node->t) {
-        borrowFromPrev(node, idx);
+    if (idx != 0 && node->children[idx - 1]->key >= node->t)
+    {
+        borrowFromPrevBPTree(node, idx);
     }
-    else if (idx != node->n
-             && node->children[idx + 1]->n >= node->t) {
-        borrowFromNext(node, idx);
+    else if (idx != node->key && node->children[idx + 1]->key >= node->t)
+    {
+        borrowFromNextBPTree(node, idx);
     }
     else {
-        if (idx != node->n) {
-            merge(node, idx);
+        if (idx != node->key) {
+            mergeBPTree(node, idx);
         }
         else {
-            merge(node, idx - 1);
+            mergeBPTree(node, idx - 1);
         }
     }
 }
 
-// Function to borrow a key from the previous child and move
-// it to the idx-th child
-void borrowFromPrev(Node* node, int idx)
+// Function to borrow a key from the previous child and move it to the idx-th child
+void borrowFromPrevBPTree(Node* node, int idx)
 {
     Node* child = node->children[idx];
     Node* sibling = node->children[idx - 1];
 
     // Move all keys in child one step ahead
-    for (int i = child->n - 1; i >= 0; --i) {
+    for (int i = child->key - 1; i >= 0; --i) {
         child->keys[i + 1] = child->keys[i];
     }
 
@@ -347,7 +348,7 @@ void borrowFromPrev(Node* node, int idx)
 
 // Function to borrow a key from the next child and move it
 // to the idx-th child
-void borrowFromNext(Node* node, int idx)
+void borrowFromNextBPTree(Node* node, int idx)
 {
     Node* child = node->children[idx];
     Node* sibling = node->children[idx + 1];
@@ -388,7 +389,7 @@ void borrowFromNext(Node* node, int idx)
 
 // Function to merge idx-th child of node with (idx + 1)-th
 // child of node
-void merge(Node* node, int idx)
+void mergeBPTree(Node* node, int idx)
 {
     Node* child = node->children[idx];
     Node* sibling = node->children[idx + 1];
