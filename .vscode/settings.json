@@ -51,6 +51,7 @@
         "list": "cpp",
         "optional": "cpp",
         "ctime": "cpp",
-        "list.h": "c"
+        "list.h": "c",
+        "stdbool.h": "c"
     }
 }

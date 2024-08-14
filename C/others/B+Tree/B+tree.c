@@ -132,24 +132,17 @@ void findAndPrint(NODE *const root, int key, bool verbose) {
 }
 
 // Find and print the range
-void findAndPrintRange(NODE *const root, int key_start, int key_end,
-             bool verbose) {
+void findAndPrintRange(NODE *const root, int key_start, int key_end, bool verbose) {
   int i;
   int array_size = key_end - key_start + 1;
   int returned_keys[array_size];
   void *returned_pointers[array_size];
-  int num_found = findRange(root, key_start, key_end, verbose,
-                returned_keys, returned_pointers);
+  int num_found = findRange(root, key_start, key_end, verbose, returned_keys, returned_pointers);
   if (!num_found)
     printf("None found.\n");
   else {
     for (i = 0; i < num_found; i++)
-      printf("Key: %d   Location: %p  Value: %d\n",
-           returned_keys[i],
-           returned_pointers[i],
-           ((record *)
-            returned_pointers[i])
-             ->value);
+      printf("Key: %d   Location: %p  Value: %d\n", returned_keys[i], returned_pointers[i], ((record *)returned_pointers[i])->value);
   }
 }
 
