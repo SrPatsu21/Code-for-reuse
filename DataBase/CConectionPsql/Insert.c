@@ -1,12 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <libpq-fe.h>
 #include<time.h>
 
-#define NUMBER_OF_INSERT 100
+#define NUMBER_OF_INSERT 100000
 
 int main(int argc, char *argv[])
 {
+    char movieTitles[100][30] = {
+        "The Matrix", "Inception", "Gladiator", "Casablanca", "Avatar",
+        "Joker", "Memento", "Inception", "Django", "Titanic",
+        "Jaws", "Rocky", "E.T.", "Jumanji", "Shrek",
+        "Grease", "Alien", "Rambo", "Zootopia", "Frozen",
+        "Tenet", "Tango", "Rush", "Heat", "Hunger",
+        "Maleficent", "Hercules", "Scream", "Aladdin", "Lucy",
+        "Venom", "Godzilla", "Tenet", "Willy Wonka", "Mulan",
+        "Coco", "Soul", "The Maze", "The Road", "Maverick",
+        "Shazam", "Moana", "Matrix", "Dune", "Beetlejuice",
+        "Shutter Island", "Lion King", "Moulin Rouge", "Bohemian", "Trolls",
+        "Dawn", "Doom", "Midsommar", "Us", "Jigsaw",
+        "Whiplash", "Parasite", "Blade Runner", "Snowpiercer", "Logan",
+        "Ex Machina", "Arrival", "Selma", "Rush Hour", "Pride",
+        "Raya", "Trolls", "Prisoners", "Spectre", "Uncut Gems",
+        "The Hunt", "Casino Royale", "Kingsman", "Gravity", "A Quiet Place"
+    };
+
+
     // conninfo is a string of keywords and values separated by spaces.
     const char *conninfo = "dbname=test_index user=postgres password=paulo29 host=localhost port=5432";
 
@@ -37,9 +57,70 @@ int main(int argc, char *argv[])
 
     for (size_t i = 0; i < NUMBER_OF_INSERT; i++)
     {
-        random_value = rand()%10;
+        random_value = rand();
+
         // Execute a query
-        char *query = "INSERT INTO films (title, duration, score, release_date) values ('test 1', '01:30:00', '1', TO_DATE('17/12/2016', 'DD/MM/YYYY'))";
+        char query [1024] = "INSERT INTO films (title, duration, score, release_date) values (";
+        char helper[1] = "\0";
+        //* title
+        char title[33] = "'";
+        strcat(title, movieTitles[random_value%100]);
+        strcat(title, "',");
+        strcat(query, title);
+        //* duration
+        char duration [11]= "'0";
+        helper[0] = '0'+ random_value%4;
+        strcat(duration, helper);
+        strcat(duration, ":");
+        //rand to change
+        random_value = rand();
+        helper[0] = '0'+ random_value%6;
+        strcat(duration, helper);
+        //rand to change
+        random_value = rand();
+        helper[0] = '0'+ random_value%10;
+        strcat(duration, helper);
+        strcat(duration, ":00',");
+        strcat(query, duration);
+        //* score
+        helper[0] = '\0';
+        helper[1] = '\0';
+        char score [8] = "'";
+        //rand to change
+        random_value = rand();
+        helper[0] = '0'+ random_value%5;
+        strcat(score, helper);
+        //! dont know why
+        strcat(score, ",");
+        strcat(query, score);
+
+        //* release_date
+        helper[0] = '\0';
+        helper[1] = '\0';
+        char release_date [50] = "TO_DATE('";
+        helper[0] = (char) '0'+ random_value%3;
+        strcat(release_date, helper);
+        helper[0] = '0'+ random_value%10;
+        strcat(release_date, helper);
+        strcat(release_date, "/");
+        helper[0] = '0';
+        strcat(release_date, helper);
+        helper[0] = '0'+ random_value%10;
+        strcat(release_date, helper);
+        strcat(release_date, "/20");
+        helper[0] = '0'+ random_value%4;
+        strcat(release_date, helper);
+        helper[0] = '0'+ random_value%10;
+        strcat(release_date, helper);
+        strcat(release_date, "', 'DD/MM/YYYY')");
+
+        strcat(query, release_date);
+        //* end
+        char *closequery = ");";
+        strcat(query, closequery);
+        //print query
+        printf("%s", query);
+
         // Submit the query and retrieve the result
         PGresult *res = PQexec(conn, query);
 
@@ -47,10 +128,8 @@ int main(int argc, char *argv[])
         ExecStatusType resStatus = PQresultStatus(res);
 
         // Convert the status to a string and print it
-        printf("Query Status: %s\n", PQresStatus(resStatus));
-
+        printf("\t \t Query Status: %s\n", PQresStatus(resStatus));
         // We have successfully executed the query
-        printf("insert Executed Successfully\n");
         PQclear(res);
     }
 
