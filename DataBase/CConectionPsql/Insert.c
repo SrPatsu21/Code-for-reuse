@@ -33,15 +33,13 @@ int main(int argc, char *argv[])
 
     //* seed random
     srand(time(NULL));
-    int random_value;
+    int random_value = 1;
 
     for (size_t i = 0; i < NUMBER_OF_INSERT; i++)
     {
         random_value = rand()%10;
-
         // Execute a query
         char *query = "INSERT INTO films (title, duration, score, release_date) values ('test 1', '01:30:00', '1', TO_DATE('17/12/2016', 'DD/MM/YYYY'))";
-        query[71]= random_value%10;
         // Submit the query and retrieve the result
         PGresult *res = PQexec(conn, query);
 
@@ -51,37 +49,8 @@ int main(int argc, char *argv[])
         // Convert the status to a string and print it
         printf("Query Status: %s\n", PQresStatus(resStatus));
 
-        // Check if the query execution was successful
-        if (resStatus != PGRES_TUPLES_OK) {
-            // If not successful, print the error message and finish the connection
-            printf("Error while executing the query: %s\n", PQerrorMessage(conn));
-
-            // Clear the result
-            PQclear(res);
-
-            // Finish the connection
-            PQfinish(conn);
-
-            // Exit the program
-            exit(1);
-        }
-            // Check if the query execution was successful
-        if (resStatus != PGRES_TUPLES_OK) {
-            // If not successful, print the error message and finish the connection
-            printf("Error while executing the query: %s\n", PQerrorMessage(conn));
-
-            // Clear the result
-            PQclear(res);
-
-            // Finish the connection
-            PQfinish(conn);
-
-            // Exit the program
-            exit(1);
-        }
-
         // We have successfully executed the query
-        printf("Query Executed Successfully\n");
+        printf("insert Executed Successfully\n");
         PQclear(res);
     }
 
