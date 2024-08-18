@@ -4,7 +4,7 @@
 #include <libpq-fe.h>
 #include<time.h>
 
-#define NUMBER_OF_INSERT 100000
+#define NUMBER_OF_INSERT 1000000
 
 int main(int argc, char *argv[])
 {
