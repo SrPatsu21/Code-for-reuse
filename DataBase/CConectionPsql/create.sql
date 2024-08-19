@@ -20,13 +20,18 @@ INSERT INTO films (title, duration, score, release_date)
 values ('test 1', '01:30:00', '1', TO_DATE('17/12/2016', 'DD/MM/YYYY'));
 
 --* select used for test
-SELECT * FROM films WHERE (title LIKE 'Sno%');
+EXPLAIN ANALYSE SELECT COUNT(title) FROM films WHERE (title = 'Joker');
+EXPLAIN ANALYSE SELECT COUNT(title) FROM films WHERE (title LIKE 'Joke%');
 
 --* index
-DROP INDEX films_Btree_index;
--- B-tree
-CREATE INDEX films_Btree_index ON films(title);
-DROP INDEX films_Btree_index;
--- hashÍndices Hash
-CREATE INDEX films_Btree_index ON films USING hash (title);
-
+DROP INDEX films_index;
+	-- B-tree
+	CREATE INDEX films_index ON films (title);
+	-- hash
+	CREATE INDEX films_index ON films USING hash (title);
+	-- gin
+	CREATE EXTENSION btree_gin;
+	CREATE INDEX films_index ON films USING gin (title);
+	-- gist
+	CREATE EXTENSION btree_gist;
+	CREATE INDEX films_index ON films USING gist (title);
