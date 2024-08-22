@@ -48,3 +48,5 @@ DROP INDEX films_index;
 	CREATE INDEX films_index ON films (LOWER(title));
 	-- partial
 	CREATE INDEX films_index ON films (title) WHERE score = '5';
+	-- Block Range Index
+	CREATE INDEX films_index ON films USING BRIN (release_date);
