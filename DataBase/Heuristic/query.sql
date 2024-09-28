@@ -12,6 +12,6 @@
         '2023-01-01' AND '2023-12-31';
 
 -- * query planner
-    SELECT c.name, p.product_name FROM customers c
+    EXPLAIN SELECT c.name, p.product_name FROM customers c
     JOIN purchases p ON c.customer_id = p.customer_id
     WHERE p.purchase_date > '2024-01-01';
