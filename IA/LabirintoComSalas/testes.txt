@@ -1,0 +1,47 @@
+T1:
+ ./maze_room.out bfs 0 0 7 6
+ ./maze_room.out dfs 0 0 7 6
+ ./maze_room.out greedy 0 0 7 6
+ ./maze_room.out astar 0 0 7 6
+
+T2:
+ ./maze_room.out bfs 0 0 7 0
+ ./maze_room.out dfs 0 0 7 0
+ ./maze_room.out greedy 0 0 7 0
+ ./maze_room.out astar 0 0 7 0
+
+T3:
+ ./maze_room.out bfs 0 0 0 6
+ ./maze_room.out dfs 0 0 0 6
+ ./maze_room.out greedy 0 0 0 6
+ ./maze_room.out astar 0 0 0 6
+
+T4:
+ ./maze_room.out bfs 0 0 4 3
+ ./maze_room.out dfs 0 0 4 3
+ ./maze_room.out greedy 0 0 4 3
+ ./maze_room.out astar 0 0 4 3
+
+T5:
+ ./maze_room.out bfs 0 0 0 0
+ ./maze_room.out dfs 0 0 0 0
+ ./maze_room.out greedy 0 0 0 0
+ ./maze_room.out astar 0 0 0 0
+
+T6:
+ ./maze_room.out bfs 4 3 5 3
+ ./maze_room.out dfs 4 3 5 3
+ ./maze_room.out greedy 4 3 5 3
+ ./maze_room.out astar 4 3 5 3
+
+T7:
+ ./maze_room.out bfs 4 3 7 0
+ ./maze_room.out dfs 4 3 7 0
+ ./maze_room.out greedy 4 3 7 0
+ ./maze_room.out astar 4 3 7 0
+
+T8:
+ ./maze_room.out bfs 4 3 0 6
+ ./maze_room.out dfs 4 3 0 6
+ ./maze_room.out greedy 4 3 0 6
+ ./maze_room.out astar 4 3 0 6
