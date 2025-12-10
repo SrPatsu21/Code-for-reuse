@@ -1,0 +1,56 @@
+groups:
+- name: infra.rules
+  rules:
+  - alert: HighCPUUsage
+    expr: avg(rate(node_cpu_seconds_total{mode!="idle"}[2m])) * 100 > 85
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Uso alto de CPU em {{ $labels.instance }}"
+      description: "Uso médio de CPU acima de 85% nos últimos 2 minutos."
+
+  - alert: HighMemoryUsage
+    expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 90
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Uso alto de memória em {{ $labels.instance }}"
+      description: "Mais de 90% da memória está em uso há mais de 5 minutos."
+
+  - alert: DiskUsageHigh
+    expr: (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"})) * 100 > 85
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Uso de disco alto em {{ $labels.instance }}"
+      description: "O disco {{ $labels.device }} está com {{ $value | printf \"%.2f\" }}% de uso há mais de 5 minutos."
+
+  - alert: SystemLoadHigh
+    expr: node_load1 > count(node_cpu_seconds_total{mode="idle"}) * 2
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Load average alto em {{ $labels.instance }}"
+      description: "O load médio dos últimos 1 minuto está 2x maior que o número de CPUs."
+
+  - alert: HostDown
+    expr: up == 0
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Host {{ $labels.instance }} inacessível"
+      description: "O Prometheus não conseguiu coletar métricas do host {{ $labels.instance }} nos últimos 2 minutos."
+
+  - alert: AlwaysFiring
+    expr: vector(1)
+    for: 10s
+    labels:
+      severity: test
+    annotations:
+      summary: "🚨 Alerta de teste está ativo"
+      description: "Este alerta dispara sempre — usado para validar Prometheus e Alertmanager."

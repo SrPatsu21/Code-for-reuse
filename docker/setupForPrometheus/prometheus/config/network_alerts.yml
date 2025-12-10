@@ -1,0 +1,38 @@
+groups:
+- name: network.rules
+  rules:
+  - alert: HighNetworkIn
+    expr: rate(node_network_receive_bytes_total{device!~"lo"}[2m]) > 10485760  # >10MB/s
+    for: 3m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Tráfego de entrada alto em {{ $labels.instance }}"
+      description: "A interface {{ $labels.device }} está recebendo mais de 10 MB/s nos últimos 3 minutos."
+
+  - alert: HighNetworkOut
+    expr: rate(node_network_transmit_bytes_total{device!~"lo"}[2m]) > 10485760  # >10MB/s
+    for: 3m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Tráfego de saída alto em {{ $labels.instance }}"
+      description: "A interface {{ $labels.device }} está enviando mais de 10 MB/s nos últimos 3 minutos."
+
+  - alert: NetworkErrors
+    expr: rate(node_network_receive_errs_total{device!~"lo"}[5m]) > 0 or rate(node_network_transmit_errs_total{device!~"lo"}[5m]) > 0
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Erros de rede em {{ $labels.instance }}"
+      description: "Detectados erros de transmissão/recepção na interface {{ $labels.device }}."
+
+  - alert: InterfaceDown
+    expr: node_network_up{device!~"lo|veth.*|docker.*"} == 0
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Interface de rede inativa"
+      description: "A interface {{ $labels.device }} está down no host {{ $labels.instance }}."
